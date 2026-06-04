@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Stays | Travel Planning</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.9.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0376c1;
+            --primary-color-dark: #002954;
+            --primary-light: #e6f4fe;
+            --text-dark: #12110f;
+            --text-light: #6b7280;
+            --extra-light: #fbf7f6;
+            --white: #ffffff;
+            --max-width: 1280px;
+            --header-font: "Merriweather", serif;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
+            --shadow-lg: 0 20px 40px rgba(0,0,0,0.12);
+            --radius-md: 12px;
+            --radius-lg: 24px;
+            --radius-pill: 50px;
+        }
+
+        * { padding: 0; margin: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: "Montserrat", sans-serif;
+            background-color: var(--extra-light);
+            color: var(--text-dark);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .hidden { display: none !important; }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            z-index: 1000;
+            padding: 1.25rem 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav_container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span { color: var(--text-dark); }
+
+        .nav_links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav_links button, .nav_links a {
+            font-family: "Montserrat", sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-light);
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .nav_links button.active-nav, .nav_links a:hover, .nav_links button:hover {
+            color: var(--primary-color);
+        }
+
+        /* --- HERO & SEARCH BAR --- */
+        header {
+            padding-top: 10rem;
+            padding-bottom: 6rem;
+            background-image: linear-gradient(rgba(0,41,84,0.4), rgba(0,41,84,0.7)), url("https://images.unsplash.com/photo-1542314831-c6a4d1409e1f?auto=format&fit=crop&w=1920&q=80");
+            background-position: center 60%;
+            background-size: cover;
+            color: var(--white);
+            text-align: center;
+        }
+
+        .header_content {
+            max-width: var(--max-width);
+            margin: auto;
+            padding-inline: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header_content h1 {
+            font-family: var(--header-font);
+            font-size: 3.8rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .header_content p {
+            font-size: 1.2rem;
+            font-weight: 400;
+            opacity: 0.9;
+            margin-bottom: 3rem;
+        }
+
+        /* Unified Premium Search Pill */
+        .search_pill {
+            display: flex;
+            align-items: center;
+            background-color: var(--white);
+            border-radius: var(--radius-pill);
+            padding: 0.5rem;
+            box-shadow: var(--shadow-lg);
+            max-width: 850px;
+            width: 100%;
+            color: var(--text-dark);
+            text-align: left;
+        }
+
+        .search_block {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            border-right: 1px solid #e5e7eb;
+            cursor: text;
+            border-radius: var(--radius-pill);
+            transition: background 0.2s;
+        }
+
+        .search_block:hover { background: var(--extra-light); }
+        .search_block:last-of-type { border-right: none; }
+
+        .search_block label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+            color: var(--text-dark);
+        }
+
+        .search_block input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+
+        .search_btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 54px; height: 54px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            flex-shrink: 0;
+            margin-left: 0.5rem;
+        }
+
+        .search_btn:hover {
+            background: var(--primary-color-dark);
+            transform: scale(1.05);
+        }
+
+        /* --- CATEGORIES STICKY BAR --- */
+        .category_bar {
+            background: var(--white);
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 72px;
+            z-index: 900;
+            padding: 1rem 0;
+        }
+
+        .category_scroll {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            gap: 2.5rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .category_scroll::-webkit-scrollbar { display: none; }
+
+        .cat_item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.2s;
+            min-width: max-content;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid transparent;
+        }
+
+        .cat_item i { font-size: 1.5rem; }
+        .cat_item span { font-size: 0.85rem; font-weight: 600; }
+        
+        .cat_item:hover { color: var(--text-dark); }
+        .cat_item.active-cat {
+            color: var(--text-dark);
+            border-bottom-color: var(--text-dark);
+        }
+
+        /* --- PROPERTY GRID & CARDS --- */
+        .main_container {
+            max-width: var(--max-width);
+            margin: auto;
+            padding: 3rem 2rem 6rem;
+        }
+
+        .property_grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .property_card {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .img_frame {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 20/19;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .img_frame img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .property_card:hover .img_frame img {
+            transform: scale(1.05);
+        }
+
+        .fav_btn {
+            position: absolute;
+            top: 12px; right: 12px;
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.8);
+            font-size: 1.6rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: transform 0.2s, color 0.2s;
+        }
+        .fav_btn:active { transform: scale(0.8); }
+        .fav_btn.is-fav { color: #ff385c; }
+        .fav_btn:hover:not(.is-fav) { color: white; }
+
+        .badge_overlay {
+            position: absolute;
+            top: 16px; left: 16px;
+            background: rgba(255,255,255,0.95);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card_header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.25rem;
+        }
+
+        .card_title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card_rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .card_rating i { color: var(--text-dark); font-size: 0.9rem; }
+
+        .card_desc {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card_price {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-top: 0.25rem;
+        }
+        .card_price span { font-weight: 400; color: var(--text-light); }
+
+        /* --- MODAL --- */
+        #modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            display: flex; align-items: center; justify-content: center;
+            padding: 2rem;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        #modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .modal_content {
+            background: var(--white);
+            width: 100%; max-width: 1100px;
+            height: 90vh;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            display: flex; flex-direction: column;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(30px) scale(0.98);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        #modal-overlay.active .modal_content { transform: translateY(0) scale(1); }
+
+        .modal_header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .modal_header h2 { font-family: var(--header-font); font-size: 1.5rem; }
+        
+        .modal_close {
+            background: #f3f4f6; border: none;
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: background 0.2s;
+        }
+        .modal_close:hover { background: #e5e7eb; }
+
+        .modal_body {
+            display: grid;
+            grid-template-columns: 1fr;
+            flex: 1; overflow-y: auto;
+        }
+        
+        @media (min-width: 860px) {
+            .modal_body { grid-template-columns: 1.5fr 1fr; }
+        }
+
+        .modal_gallery img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            min-height: 400px;
+        }
+
+        .modal_details { padding: 2.5rem; }
+        
+        .amenity_list {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+            margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;
+        }
+        .amenity_item { display: flex; align-items: center; gap: 0.75rem; font-size: 1rem; color: var(--text-dark); }
+        .amenity_item i { font-size: 1.5rem; color: var(--text-light); }
+
+        .booking_card {
+            background: var(--white);
+            border: 1px solid #e5e7eb;
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .price_calc_row {
+            display: flex; justify-content: space-between; margin-bottom: 1rem; color: var(--text-dark);
+        }
+
+        .primary_btn {
+            width: 100%; padding: 1rem;
+            background: var(--primary-color);
+            color: white; border: none; border-radius: 8px;
+            font-size: 1.1rem; font-weight: 600; cursor: pointer;
+            transition: background 0.2s;
+            display: flex; justify-content: center; align-items: center; gap: 0.5rem;
+        }
+        .primary_btn:hover { background: var(--primary-color-dark); }
+
+        /* --- TOAST NOTIFICATION --- */
+        .toast {
+            position: fixed; bottom: 2rem; right: 2rem;
+            background: #111827; color: white;
+            padding: 1rem 1.5rem; border-radius: 8px;
+            display: flex; align-items: center; gap: 1rem;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(100px); opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 3000;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast i { color: #10b981; font-size: 1.5rem; }
+
+        /* --- MY BOOKINGS VIEW --- */
+        .history_container {
+            max-width: 900px; margin: 10rem auto 6rem; padding: 0 2rem;
+        }
+        
+        .history_header {
+            margin-bottom: 3rem; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb;
+        }
+        .history_header h1 { font-family: var(--header-font); font-size: 2.5rem; }
+
+        .trip_card {
+            display: flex; flex-direction: column;
+            background: var(--white); border-radius: var(--radius-md);
+            overflow: hidden; border: 1px solid #e5e7eb; margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm); transition: box-shadow 0.2s;
+        }
+        @media (min-width: 600px) { .trip_card { flex-direction: row; } }
+        .trip_card:hover { box-shadow: var(--shadow-md); }
+        
+        .trip_img { width: 100%; height: 200px; object-fit: cover; }
+        @media (min-width: 600px) { .trip_img { width: 300px; height: auto; } }
+        
+        .trip_body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .trip_status { display: inline-block; padding: 4px 12px; background: #ecfdf5; color: #059669; border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 700; margin-bottom: 0.5rem; width: max-content;}
+
+        /* --- DANGER BUTTON --- */
+        .danger_btn {
+            background: transparent;
+            color: #ef4444;
+            border: 1px solid #ef4444;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .danger_btn:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* --- LOADING STATE --- */
+        .loading_state {
+            grid-column: 1/-1;
+            padding: 4rem;
+            text-align: center;
+            color: var(--text-light);
+        }
+        .loading_state i {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 1rem;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+    </style>
+</head>
+<body>
+
+    <nav id="navbar">
+        <div class="nav_container">
+            <a href="#" class="logo">Travel planning<span> and recommendation </span></a>
+            <ul class="nav_links">
+                <li><button onclick="setView('home')" id="nav-explore" class="active-nav">Explore</button></li>
+                <li><button onclick="setView('bookings')" id="nav-trips">My Trips</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="home-view">
+        <header>
+            <div class="header_content">
+                <h1>Find your next<br>extraordinary stay.</h1>
+                <p>Discover handpicked villas, penthouses, and hidden gems.</p>
+                
+                <div class="search_pill">
+                    <div class="search_block" style="flex: 1.5;">
+                        <label>Where</label>
+                        <!-- FIX 1: oninput for live search, onkeydown Enter support -->
+                        <input
+                            type="text"
+                            id="search-input"
+                            oninput="handleSearch(this.value)"
+                            onkeydown="if(event.key==='Enter') handleSearch(this.value)"
+                            placeholder="Search destinations or hotels"
+                        >
+                    </div>
+                    <div class="search_block">
+                        <label>Check in - out</label>
+                        <input type="text" placeholder="Add dates">
+                    </div>
+                    <div class="search_block">
+                        <label>Guests</label>
+                        <input type="text" placeholder="Add guests">
+                    </div>
+                    <!-- FIX 2: Button now triggers search on click -->
+                    <button class="search_btn" onclick="handleSearch(document.getElementById('search-input').value)">
+                        <i class="ri-search-line"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="category_bar">
+            <div class="category_scroll" id="category-list"></div>
+        </div>
+
+        <main class="main_container">
+            <div class="property_grid" id="property-grid">
+                <div class="loading_state">
+                    <i class="ri-loader-4-line"></i>
+                    <p>Loading hotels...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="bookings-view" class="hidden">
+        <div class="history_container">
+            <div class="history_header">
+                <h1>Trips</h1>
+                <p style="color: var(--text-light); margin-top:0.5rem;">View and manage your upcoming reservations.</p>
+            </div>
+            <div id="bookings-list"></div>
+        </div>
+    </div>
+
+    <div id="modal-overlay">
+        <div class="modal_content" id="modal-content"></div>
+    </div>
+
+    <div class="toast" id="toast">
+        <i class="ri-checkbox-circle-fill"></i>
+        <div>
+            <h4 style="font-size: 0.95rem; margin-bottom: 0.1rem;">Reservation Confirmed</h4>
+            <p style="font-size: 0.85rem; color: #9ca3af;">You can view details in My Trips.</p>
+        </div>
+    </div>
+
+    <script>
+
+        const CATEGORIES = [
+            { label: 'All',          icon: 'ri-apps-2-line' },
+            { label: 'Coastal',      icon: 'ri-water-flash-line' },
+            { label: 'Skiing',       icon: 'ri-snowy-line' },
+            { label: 'Iconic Cities',icon: 'ri-building-4-line' },
+            { label: 'Cultural',     icon: 'ri-ancient-gate-line' },
+            { label: 'Nature',       icon: 'ri-leaf-line' }
+        ];
+
+        // State
+        let activeCategory = 'All';
+        let searchQuery    = '';
+        let favorites      = JSON.parse(localStorage.getItem('lumina_favs'))     || [];
+        let bookings       = JSON.parse(localStorage.getItem('lumina_bookings')) || [];
+        window.PROPERTIES  = null; // set after fetch
+
+        // ── Navigation ───────────────────────────────────────────
+        function setView(view) {
+            document.getElementById('home-view').classList.toggle('hidden', view !== 'home');
+            document.getElementById('bookings-view').classList.toggle('hidden', view !== 'bookings');
+            document.getElementById('nav-explore').className = view === 'home'     ? 'active-nav' : '';
+            document.getElementById('nav-trips').className   = view === 'bookings' ? 'active-nav' : '';
+            if (view === 'bookings') renderBookings();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ── FIX 3: renderCategories was called but never defined ─
+        function renderCategories() {
+            const list = document.getElementById('category-list');
+            list.innerHTML = CATEGORIES.map(c => `
+                <div class="cat_item ${activeCategory === c.label ? 'active-cat' : ''}"
+                     onclick="setCategory('${c.label}')">
+                    <i class="${c.icon}"></i>
+                    <span>${c.label}</span>
+                </div>
+            `).join('');
+        }
+
+        // ── Search & Filter ──────────────────────────────────────
+        function handleSearch(val) {
+            searchQuery = val.toLowerCase().trim();
+            renderProperties();
+        }
+
+        function setCategory(cat) {
+            activeCategory = cat;
+            renderCategories();
+            renderProperties();
+        }
+
+        function toggleFavorite(id, event) {
+            event.stopPropagation();
+            if (favorites.includes(id)) favorites = favorites.filter(f => f !== id);
+            else favorites.push(id);
+            localStorage.setItem('lumina_favs', JSON.stringify(favorites));
+            renderProperties();
+        }
+
+        function cancelBooking(id) {
+            if (confirm('Are you sure you want to cancel this reservation?')) {
+                bookings = bookings.filter(b => b.id !== id);
+                localStorage.setItem('lumina_bookings', JSON.stringify(bookings));
+                renderBookings();
+            }
+        }
+
+        // ── Static Hotel Data (no server required) ───────────────
+        const STATIC_HOTELS = [
+          // ICONIC CITIES
+          { id:1, name:'Hôtel de Crillon', title:'Palace hotel on Place de la Concorde', location:'Paris, France', image:'https://images.unsplash.com/photo-1542314831-c6a4d1409e1f?w=800', category:'Iconic Cities', rating:4.97, price:850, badge:'Luxury', features:['ri-wifi-line|Free WiFi','ri-restaurant-2-line|Fine Dining','ri-swimming-pool-line|Pool','ri-service-line|Concierge','ri-car-line|Valet Parking','ri-shield-check-line|24h Security'] },
+          { id:2, name:'Le Marais Boutique', title:'Historic apartment in Le Marais', location:'Paris, France', image:'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800', category:'Iconic Cities', rating:4.92, price:290, badge:'Guest Favourite', features:['ri-wifi-line|Free WiFi','ri-restaurant-line|Breakfast Included','ri-map-pin-line|Prime Location','ri-building-line|Historic Building'] },
+          { id:3, name:'The Savoy', title:'Legendary Thames-side luxury hotel', location:'London, UK', image:'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800', category:'Iconic Cities', rating:4.95, price:780, badge:'Luxury', features:['ri-wifi-line|Free WiFi','ri-swimming-pool-line|Indoor Pool','ri-restaurant-2-line|Fine Dining','ri-service-line|Butler Service','ri-spa-line|Spa'] },
+          { id:4, name:'citizenM Tower of London', title:'Modern design hotel near Tower Bridge', location:'London, UK', image:'https://images.unsplash.com/photo-1445991842772-097fea258e7b?w=800', category:'Iconic Cities', rating:4.6, price:195, badge:'Best Value', features:['ri-wifi-line|Free WiFi','ri-24-hours-line|24h Bar','ri-map-pin-line|City Centre'] },
+          { id:5, name:'Aman Tokyo', title:'Minimalist sanctuary above the city', location:'Tokyo, Japan', image:'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800', category:'Iconic Cities', rating:4.98, price:1100, badge:'Luxury', features:['ri-wifi-line|Free WiFi','ri-spa-line|Onsen Spa','ri-restaurant-2-line|Fine Dining','ri-goblet-line|Rooftop Bar','ri-fitness-line|Gym'] },
+          { id:6, name:'Park Hyatt New York', title:'Refined elegance above Central Park', location:'New York, USA', image:'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800', category:'Iconic Cities', rating:4.88, price:720, badge:null, features:['ri-wifi-line|Free WiFi','ri-swimming-pool-line|Pool','ri-spa-line|Spa','ri-restaurant-2-line|Fine Dining','ri-fitness-line|Gym'] },
+          { id:7, name:'Four Seasons Singapore', title:'Urban oasis in the Orchard district', location:'Singapore', image:'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800', category:'Iconic Cities', rating:4.9, price:620, badge:'Luxury', features:['ri-wifi-line|Free WiFi','ri-swimming-pool-line|Infinity Pool','ri-restaurant-2-line|Fine Dining','ri-spa-line|Spa','ri-car-line|Valet'] },
+          { id:8, name:'Mandarin Oriental Hong Kong', title:'Iconic harbour views since 1963', location:'Hong Kong', image:'https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=800', category:'Iconic Cities', rating:4.93, price:680, badge:'Luxury', features:['ri-wifi-line|Free WiFi','ri-spa-line|Award-winning Spa','ri-restaurant-2-line|Fine Dining','ri-service-line|Concierge'] },
+          // COASTAL
+          { id:9, name:'Hotel Arts Barcelona', title:'Beachfront tower in the Olympic Village', location:'Barcelona, Spain', image:'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=800', category:'Coastal', rating:4.88, price:520, badge:'Luxury', features:['ri-swimming-pool-line|Infinity Pool','ri-wifi-line|Free WiFi','ri-restaurant-2-line|Rooftop Bar','ri-spa-line|Spa','ri-beach-line|Beach Access'] },
+          { id:10, name:'One&Only Reethi Rah', title:'Overwater bungalows in the Maldives', location:'Maldives', image:'https://images.unsplash.com/photo-1602002418082-dd4a3f5b4b82?w=800', category:'Coastal', rating:4.99, price:1800, badge:'Luxury', features:['ri-wifi-line|Free WiFi','ri-beach-line|Private Beach','ri-swimming-pool-line|Infinity Pool','ri-ship-line|Water Sports','ri-spa-line|Spa'] },
+          { id:11, name:'Amalfi Coast Villa', title:'Clifftop retreat above the Tyrrhenian Sea', location:'Amalfi, Italy', image:'https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=800', category:'Coastal', rating:4.95, price:420, badge:'Guest Favourite', features:['ri-wifi-line|Free WiFi','ri-swimming-pool-line|Infinity Pool','ri-restaurant-line|Breakfast Included','ri-map-pin-line|Sea Views'] },
+          { id:12, name:'Jade Mountain Resort', title:'Sanctuary with open-air suites & Atlantic views', location:'St Lucia', image:'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800', category:'Coastal', rating:4.97, price:950, badge:'Eco-Luxury', features:['ri-wifi-line|Free WiFi','ri-beach-line|Private Beach','ri-swimming-pool-line|Private Pool','ri-restaurant-2-line|Farm-to-table'] },
+          { id:13, name:'Six Senses Zighy Bay', title:'Dhow arrival to a private Omani cove', location:'Zighy Bay, Oman', image:'https://images.unsplash.com/photo-1586861203927-800a5acdcc4d?w=800', category:'Coastal', rating:4.96, price:870, badge:'Luxury', features:['ri-wifi-line|Free WiFi','ri-beach-line|Private Beach','ri-spa-line|Spa','ri-swimming-pool-line|Infinity Pool','ri-leaf-line|Eco-Friendly'] },
+          // SKIING
+          { id:14, name:'Badrutt\'s Palace St Moritz', title:'Alpine legend above the Engadin Valley', location:'St Moritz, Switzerland', image:'https://images.unsplash.com/photo-1548013146-72479768bada?w=800', category:'Skiing', rating:4.94, price:1200, badge:'Luxury', features:['ri-wifi-line|Free WiFi','ri-swimming-pool-line|Indoor Pool','ri-restaurant-2-line|Fine Dining','ri-spa-line|Spa','ri-service-line|Ski Concierge'] },
+          { id:15, name:'Chalet Zermatt Peak', title:'Slope-side chalet with Matterhorn views', location:'Zermatt, Switzerland', image:'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=800', category:'Skiing', rating:4.9, price:760, badge:'Guest Favourite', features:['ri-wifi-line|Free WiFi','ri-spa-line|Spa','ri-restaurant-line|Breakfast Included','ri-map-pin-line|Ski-in/Ski-out'] },
+          { id:16, name:'Resorts World Breckenridge', title:'Mountain modern at 9,600 feet', location:'Colorado, USA', image:'https://images.unsplash.com/photo-1605649487212-47bdab064df7?w=800', category:'Skiing', rating:4.78, price:390, badge:null, features:['ri-wifi-line|Free WiFi','ri-fireplace-line|Fireplace','ri-restaurant-line|Breakfast Included','ri-map-pin-line|Ski-in/Ski-out'] },
+          // CULTURAL
+          { id:17, name:'Rocco Forte Hotel de Russie', title:'Secret garden retreat near Piazza del Popolo', location:'Rome, Italy', image:'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800', category:'Cultural', rating:4.93, price:650, badge:'Luxury', features:['ri-spa-line|Wellness Spa','ri-restaurant-2-line|Fine Dining','ri-wifi-line|Free WiFi','ri-garden-line|Secret Garden','ri-service-line|Concierge'] },
+          { id:18, name:'La Mamounia Marrakech', title:'Imperial palace garden in the medina', location:'Marrakech, Morocco', image:'https://images.unsplash.com/photo-1553913861-c0fddf2619ee?w=800', category:'Cultural', rating:4.96, price:540, badge:'Luxury', features:['ri-swimming-pool-line|Pool','ri-spa-line|Hammam Spa','ri-restaurant-2-line|Fine Dining','ri-wifi-line|Free WiFi','ri-garden-line|Private Gardens'] },
+          { id:19, name:'Riad Yasmine Fes', title:'Andalusian courtyard riad in the ancient medina', location:'Fes, Morocco', image:'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800', category:'Cultural', rating:4.89, price:180, badge:'Guest Favourite', features:['ri-wifi-line|Free WiFi','ri-restaurant-line|Breakfast Included','ri-map-pin-line|Medina Location'] },
+          { id:20, name:'Oberoi Udaivilas', title:'Floating palace on Lake Pichola', location:'Udaipur, India', image:'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800', category:'Cultural', rating:4.98, price:780, badge:'Luxury', features:['ri-wifi-line|Free WiFi','ri-swimming-pool-line|Infinity Pool','ri-restaurant-2-line|Fine Dining','ri-spa-line|Spa','ri-service-line|Butler Service'] },
+          // NATURE
+          { id:21, name:'Four Seasons Serengeti', title:'Big Five safaris from your private plunge pool', location:'Serengeti, Tanzania', image:'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800', category:'Nature', rating:4.97, price:1600, badge:'Luxury', features:['ri-wifi-line|Free WiFi','ri-leaf-line|Eco-Friendly','ri-restaurant-2-line|Fine Dining','ri-swimming-pool-line|Pool','ri-service-line|Safari Guide'] },
+          { id:22, name:'Treehouse Lodge Amazon', title:'Canopy suites deep in the rainforest', location:'Iquitos, Peru', image:'https://images.unsplash.com/photo-1448375240586-882707db888b?w=800', category:'Nature', rating:4.91, price:340, badge:'Eco-Luxury', features:['ri-leaf-line|Eco-Certified','ri-wifi-line|Free WiFi','ri-restaurant-line|All-Inclusive'] },
+          { id:23, name:'Longitude 131 Uluru', title:'Tented pavilions facing the sacred rock', location:'Uluru, Australia', image:'https://images.unsplash.com/photo-1529108190281-9a4f620bc2d8?w=800', category:'Nature', rating:4.95, price:1100, badge:'Eco-Luxury', features:['ri-wifi-line|Free WiFi','ri-leaf-line|Eco-Friendly','ri-restaurant-2-line|Fine Dining','ri-service-line|Indigenous Guides'] },
+          { id:24, name:'Explora Patagonia', title:'Base camp for Torres del Paine treks', location:'Patagonia, Chile', image:'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800', category:'Nature', rating:4.93, price:680, badge:'Guest Favourite', features:['ri-wifi-line|Free WiFi','ri-leaf-line|Eco-Friendly','ri-restaurant-2-line|All-Inclusive','ri-mountain-line|Guided Hikes'] },
+          // MIDDLE EAST
+          { id:25, name:'Burj Al Arab', title:'The world\'s most iconic sail-shaped hotel', location:'Dubai, UAE', image:'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800', category:'Iconic Cities', rating:4.95, price:2000, badge:'Luxury', features:['ri-wifi-line|Free WiFi','ri-swimming-pool-line|Private Beach Pool','ri-restaurant-2-line|Underwater Dining','ri-helicopter-line|Helipad','ri-service-line|Butler Service'] },
+          { id:26, name:'Alila Jabal Akhdar', title:'Clifftop resort in the Green Mountain', location:'Muscat, Oman', image:'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800', category:'Nature', rating:4.92, price:460, badge:'Luxury', features:['ri-wifi-line|Free WiFi','ri-swimming-pool-line|Infinity Pool','ri-spa-line|Spa','ri-mountain-line|Canyon Views'] },
+          { id:27, name:'Bab Al Shams Dubai', title:'Desert oasis resort and spa', location:'Dubai, UAE', image:'https://images.unsplash.com/photo-1544984243-ec57ea16fe25?w=800', category:'Nature', rating:4.85, price:380, badge:null, features:['ri-wifi-line|Free WiFi','ri-swimming-pool-line|Desert Pool','ri-spa-line|Spa','ri-restaurant-2-line|Bedouin Dinner','ri-leaf-line|Eco-Friendly'] },
+          // ASIA
+          { id:28, name:'Amanjiwo Java', title:'Borobudur temple views at dawn', location:'Java, Indonesia', image:'https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=800', category:'Cultural', rating:4.98, price:950, badge:'Luxury', features:['ri-wifi-line|Free WiFi','ri-swimming-pool-line|Infinity Pool','ri-spa-line|Spa','ri-restaurant-2-line|Fine Dining','ri-leaf-line|Eco-Friendly'] },
+          { id:29, name:'Capella Singapore', title:'Colonial manor on Sentosa island', location:'Singapore', image:'https://images.unsplash.com/photo-1574958269340-fa927503f3dd?w=800', category:'Coastal', rating:4.94, price:820, badge:'Luxury', features:['ri-wifi-line|Free WiFi','ri-swimming-pool-line|Heritage Pool','ri-spa-line|Spa','ri-restaurant-2-line|Fine Dining'] },
+          { id:30, name:'Soneva Kiri Koh Kood', title:'Barefoot luxury on a private Thai island', location:'Koh Kood, Thailand', image:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800', category:'Coastal', rating:4.97, price:1400, badge:'Eco-Luxury', features:['ri-wifi-line|Free WiFi','ri-beach-line|Private Beach','ri-spa-line|Spa','ri-leaf-line|Eco-Certified','ri-restaurant-2-line|Farm-to-table'] },
+        ];
+
+        // ── window.onload — load static data directly ─────────
+        window.onload = () => {
+            renderCategories();
+            window.PROPERTIES = STATIC_HOTELS;
+            renderProperties();
+        };
+
+        // ── FIX 5: renderProperties guards PROPERTIES null + searches name field too ─
+        function renderProperties() {
+            const grid = document.getElementById('property-grid');
+
+            if (!window.PROPERTIES) return; // still loading
+
+            const filtered = window.PROPERTIES.filter(p => {
+                const matchesCat    = activeCategory === 'All' || p.category === activeCategory;
+                const searchIn      = [p.title, p.location, p.name, p.description, p.desc]
+                                        .filter(Boolean)
+                                        .join(' ')
+                                        .toLowerCase();
+                const matchesSearch = !searchQuery || searchIn.includes(searchQuery);
+                return matchesCat && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div style="grid-column:1/-1; padding:4rem; text-align:center; color:var(--text-light);">
+                    No hotels match your search.
+                </div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(p => `
+                <div class="property_card" onclick="openModal(${p.id})">
+                    <div class="img_frame">
+                        <img src="${p.image}" alt="${p.title || p.name}" loading="lazy">
+                        <button class="fav_btn ${favorites.includes(p.id) ? 'is-fav' : ''}"
+                                onclick="toggleFavorite(${p.id}, event)">
+                            <i class="${favorites.includes(p.id) ? 'ri-heart-fill' : 'ri-heart-3-fill'}"></i>
+                        </button>
+                        ${p.badge ? `<div class="badge_overlay">${p.badge}</div>` : ''}
+                    </div>
+                    <div class="card_header">
+                        <h3 class="card_title">${p.location || p.name}</h3>
+                        <div class="card_rating"><i class="ri-star-fill"></i> ${p.rating}</div>
+                    </div>
+                    <p class="card_desc">${p.title || ''}</p>
+                    <p class="card_price">$${p.price} <span>night</span></p>
+                </div>
+            `).join('');
+        }
+
+        // ── Modal ────────────────────────────────────────────────
+        function openModal(id) {
+            const p = window.PROPERTIES.find(item => item.id === id);
+            if (!p) return;
+
+            const overlay = document.getElementById('modal-overlay');
+            const content = document.getElementById('modal-content');
+            window._currentNights = 1;
+            window._currentGuests = 1;
+            window._currentModalPrice = p.price + 85 + 40;
+
+            // features may be a JSON string (from DB) or already an array
+            const features = Array.isArray(p.features)
+                ? p.features
+                : (typeof p.features === 'string' ? JSON.parse(p.features) : []);
+
+            content.innerHTML = `
+                <div class="modal_header">
+                    <h2>${p.title || p.name}</h2>
+                    <button class="modal_close" onclick="closeModal()">
+                        <i class="ri-close-line" style="font-size:1.5rem"></i>
+                    </button>
+                </div>
+                <div class="modal_body">
+                    <div class="modal_gallery">
+                        <img src="${p.image}" alt="${p.title || p.name}">
+                    </div>
+                    <div class="modal_details">
+                        <h3 style="font-size:1.5rem; margin-bottom:0.25rem;">
+                            ${p.name || p.title}
+                        </h3>
+                        <p style="color:var(--text-light); margin-bottom:0.5rem;">
+                            ${p.location ? `📍 ${p.location}` : ''}
+                        </p>
+                        <p style="color:var(--text-light); margin-bottom:1.5rem;">
+                            2 guests · 1 bedroom · 1 bed · 1 bath
+                        </p>
+                        
+                        <div style="display:flex; align-items:center; gap:1rem; padding:1.5rem 0; border-top:1px solid #e5e7eb;">
+                            <i class="ri-medal-line" style="font-size:2rem; color:var(--text-dark);"></i>
+                            <div>
+                                <p style="font-weight:700;">Highly Rated Host</p>
+                                <p style="font-size:0.9rem; color:var(--text-light);">
+                                    Superhosts are experienced, highly rated hosts.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="amenity_list">
+                            ${features.map(f => {
+                                const [icon, text] = f.split('|');
+                                return `<div class="amenity_item"><i class="${icon}"></i> ${text}</div>`;
+                            }).join('')}
+                        </div>
+
+                        <div class="booking_card" id="booking-card-inner">
+                            <h3 style="font-size:1.5rem; margin-bottom:1.5rem;">
+                                $${p.price}
+                                <span style="font-size:1rem; font-weight:400; color:var(--text-light);">night</span>
+                            </h3>
+                            
+                            <div style="border:1px solid #9ca3af; border-radius:8px; margin-bottom:1.5rem; overflow:hidden;">
+                                <div style="display:flex; border-bottom:1px solid #9ca3af;">
+                                    <div style="flex:1; padding:10px; border-right:1px solid #9ca3af;">
+                                        <p style="font-size:0.65rem; font-weight:700; text-transform:uppercase; margin-bottom:4px;">Check-in</p>
+                                        <input type="date" id="checkin-date" style="border:none;outline:none;font-family:inherit;font-size:0.9rem;width:100%;background:transparent;cursor:pointer;" oninput="recalcPrice(${p.price})" min="${new Date().toISOString().split('T')[0]}">
+                                    </div>
+                                    <div style="flex:1; padding:10px;">
+                                        <p style="font-size:0.65rem; font-weight:700; text-transform:uppercase; margin-bottom:4px;">Checkout</p>
+                                        <input type="date" id="checkout-date" style="border:none;outline:none;font-family:inherit;font-size:0.9rem;width:100%;background:transparent;cursor:pointer;" oninput="recalcPrice(${p.price})" min="${new Date().toISOString().split('T')[0]}">
+                                    </div>
+                                </div>
+                                <div style="padding:10px; display:flex; align-items:center; justify-content:space-between;">
+                                    <div>
+                                        <p style="font-size:0.65rem; font-weight:700; text-transform:uppercase; margin-bottom:2px;">Guests</p>
+                                        <p id="guest-label" style="font-size:0.9rem;">1 guest</p>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:0.5rem;">
+                                        <button onclick="changeGuests(-1)" style="width:28px;height:28px;border-radius:50%;border:1px solid #9ca3af;background:transparent;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;">−</button>
+                                        <span id="guest-count" style="font-weight:700;min-width:18px;text-align:center;">1</span>
+                                        <button onclick="changeGuests(1)" style="width:28px;height:28px;border-radius:50%;border:1px solid #9ca3af;background:transparent;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;">+</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="primary_btn" onclick="confirmBooking(${p.id})">Reserve</button>
+                            <p style="text-align:center; font-size:0.85rem; color:var(--text-light); margin-top:1rem;">
+                                You won't be charged yet
+                            </p>
+
+                            <div style="margin-top:1.5rem;" id="price-breakdown">
+                                <div class="price_calc_row">
+                                    <span style="text-decoration:underline;" id="nights-label">$${p.price} × 1 night</span>
+                                    <span id="nights-total">$${p.price}</span>
+                                </div>
+                                <div class="price_calc_row">
+                                    <span style="text-decoration:underline;">Cleaning fee</span>
+                                    <span>$85</span>
+                                </div>
+                                <div class="price_calc_row">
+                                    <span style="text-decoration:underline;">Service fee</span>
+                                    <span>$40</span>
+                                </div>
+                                <div class="price_calc_row"
+                                     style="border-top:1px solid #e5e7eb; padding-top:1.5rem; font-weight:700; font-size:1.1rem;">
+                                    <span>Total before taxes</span>
+                                    <span id="grand-total">$${p.price + 85 + 40}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // ── Live price recalculation ─────────────────────────────
+        window._currentModalPrice = 0;
+        window._currentGuests = 1;
+
+        function recalcPrice(pricePerNight) {
+            const ci = document.getElementById('checkin-date');
+            const co = document.getElementById('checkout-date');
+            if (!ci || !co || !ci.value || !co.value) return;
+            const msPerDay = 86400000;
+            const nights = Math.max(1, Math.round((new Date(co.value) - new Date(ci.value)) / msPerDay));
+            if (nights < 1) { co.value = ''; return; }
+            const subtotal = pricePerNight * nights;
+            const total    = subtotal + 85 + 40;
+            const nightLabel = document.getElementById('nights-label');
+            const nightTotal = document.getElementById('nights-total');
+            const grand      = document.getElementById('grand-total');
+            if (nightLabel) nightLabel.textContent = `$${pricePerNight} × ${nights} night${nights>1?'s':''}`;
+            if (nightTotal) nightTotal.textContent = `$${subtotal}`;
+            if (grand)      grand.textContent = `$${total}`;
+            window._currentNights = nights;
+            window._currentModalPrice = total;
+        }
+
+        function changeGuests(delta) {
+            const el = document.getElementById('guest-count');
+            const lbl = document.getElementById('guest-label');
+            if (!el) return;
+            let count = parseInt(el.textContent) + delta;
+            count = Math.max(1, Math.min(8, count));
+            window._currentGuests = count;
+            el.textContent = count;
+            if (lbl) lbl.textContent = `${count} guest${count > 1 ? 's' : ''}`;
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('active');
+            document.body.style.overflow = '';
+            window._currentNights = 1;
+            window._currentGuests = 1;
+            window._currentModalPrice = 0;
+        }
+
+        document.getElementById('modal-overlay').addEventListener('click', e => {
+            if (e.target.id === 'modal-overlay') closeModal();
+        });
+
+        // ── Booking & Toast ──────────────────────────────────────
+        function confirmBooking(id) {
+            const p = window.PROPERTIES.find(item => item.id === id);
+            if (!p) return;
+
+            const ci = document.getElementById('checkin-date');
+            const co = document.getElementById('checkout-date');
+
+            const checkinVal  = ci && ci.value  ? ci.value  : null;
+            const checkoutVal = co && co.value ? co.value : null;
+
+            if (!checkinVal || !checkoutVal) {
+                const today = new Date();
+                const checkout = new Date(today); checkout.setDate(today.getDate() + 3);
+                if (ci) ci.value = today.toISOString().split('T')[0];
+                if (co) co.value = checkout.toISOString().split('T')[0];
+                recalcPrice(p.price);
+            }
+
+            const nights = window._currentNights || 3;
+            const guests = window._currentGuests || 1;
+            const total  = window._currentModalPrice || ((p.price * nights) + 125);
+
+            const fmt = d => d ? new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+            const dateStr = (checkinVal && checkoutVal)
+                ? `${fmt(checkinVal)} → ${fmt(checkoutVal)}`
+                : 'Upcoming Check-in';
+
+            bookings.unshift({
+                id:       Date.now(),
+                title:    p.title || p.name,
+                location: p.location || '',
+                image:    p.image,
+                date:     dateStr,
+                guests:   guests,
+                nights:   nights,
+                total:    total
+            });
+            localStorage.setItem('lumina_bookings', JSON.stringify(bookings));
+            closeModal();
+            showToast();
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        // ── My Trips ─────────────────────────────────────────────
+        function renderBookings() {
+            const container = document.getElementById('bookings-list');
+            if (bookings.length === 0) {
+                container.innerHTML = `
+                    <div style="padding:4rem 0;">
+                        <h2 style="font-family:var(--header-font); font-size:1.5rem; margin-bottom:1rem;">
+                            No trips booked... yet!
+                        </h2>
+                        <p style="color:var(--text-light); margin-bottom:2rem;">
+                            Time to dust off your bags and start planning your next adventure.
+                        </p>
+                        <button class="primary_btn" style="width:max-content; padding:0.8rem 2rem;"
+                                onclick="setView('home')">Start searching</button>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = bookings.map(b => `
+                <div class="trip_card">
+                    <img src="${b.image}" class="trip_img" alt="${b.title}">
+                    <div class="trip_body">
+                        <span class="trip_status">Confirmed</span>
+                        <h2 style="font-family:var(--header-font); font-size:1.5rem; margin-bottom:0.25rem;">
+                            ${b.location}
+                        </h2>
+                        <p style="color:var(--text-light); margin-bottom:1.5rem;">${b.title}</p>
+                        
+                        <div style="display:flex; justify-content:space-between; align-items:flex-end;
+                                    border-top:1px solid #e5e7eb; padding-top:1.5rem; margin-bottom:1rem;">
+                            <div>
+                                <p style="font-size:0.75rem; text-transform:uppercase; font-weight:700; color:var(--text-light);">Dates</p>
+                                <p style="font-weight:600;">${b.date}</p>
+                                <p style="font-size:0.85rem;color:var(--text-light);">${b.guests||1} guest${(b.guests||1)>1?'s':''} · ${b.nights||1} night${(b.nights||1)>1?'s':''}</p>
+                            </div>
+                            <div style="text-align:right;">
+                                <p style="font-size:0.75rem; text-transform:uppercase; font-weight:700; color:var(--text-light);">Total</p>
+                                <p style="font-weight:600; font-size:1.1rem;">$${b.total}</p>
+                            </div>
+                        </div>
+
+                        <div style="text-align:right;">
+                            <button class="danger_btn" onclick="cancelBooking(${b.id})">
+                                <i class="ri-delete-bin-line"></i> Cancel Trip
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ── Navbar scroll effect ─────────────────────────────────
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').style.boxShadow =
+                window.scrollY > 20 ? 'var(--shadow-sm)' : 'none';
+        });
+
+    </script>
+</body>
+</html>

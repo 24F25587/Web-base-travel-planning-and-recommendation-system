@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.9.0/fonts/remixicon.css" rel="stylesheet"/>
+    <title>Web-Based Travel Planning and Recommendation System</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+        :root{
+            --primary-color: #0376c1;
+            --primary-color-dark: #002954;
+            --text-dark: #12110f;
+            --text-light: #6b7280;
+            --extra-light: #fbf7f6;
+            --white: #ffffff;
+            --max-width: 1200px;
+            --header-font: "Merriweather", serif;
+        }
+        * {
+            padding:0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        .section_container{
+            max-width: var(--max-width);
+            margin:auto;
+            padding: 5rem 1rem;
+        }
+        .section_header{
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            text-align: center;
+        }
+        .section_description {
+            font-weight: 500;
+            font-family: var(--header-font);
+            color: var(--text-light);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .btn{
+            padding: 0.75rem 1.5rem;
+            outline: none;
+            border: none;
+            font-size: 1rem;
+            color:var(--white);
+            background-color: var(--primary-color);
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .btn:hover{
+            background-color: #0b619b;
+        }
+        .logo{
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+        .logo span{
+            color: var(--text-dark)
+        }
+        img{
+            display: flex;
+            width: 100%;
+        }
+        a {
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        ul{
+            list-style: none;
+        }
+        html, body {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: "Montserrat", sans-serif;
+            background-color: var(--extra-light);
+        }
+        nav{
+            position: fixed;
+            isolation: isolate;
+            width: 100%;
+            max-width: var(--max-width);
+            margin-inline:auto;
+            z-index: 9;
+        }
+        .nav_header{
+            padding: 1rem;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--extra-light);
+            border-bottom: 1px solid  var(--extra-light);
+        }
+        .nav_menu_btn{
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+        .nav_links{
+            position: absolute;
+            top:65px;
+            left:0;
+            width:100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 2rem;
+            padding:2rem;
+            background-color: var(--extra-light);
+            border-bottom: 1px solid var(--text-light);
+            transition: 0.5s;
+            z-index: -1;
+            transform: translateY(-100%);
+        }
+        .nav_links.open{
+            transform: translateY(0);
+        }
+        .nav_links a {
+            font-family: var(--header-font);
+            font-weight: 600;
+            white-space: nowrap;
+            color:var(--text-light);
+        }
+        .nav_links a:hover {
+            color: var(--primary-color);
+        }
+        .header{
+            padding-block: 5rem;
+            background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url("https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1600&q=80");
+            background-position: center center;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        .header_container h1{
+            margin-bottom: 1rem;
+            font-size: 4rem;
+            font-weight: 600;
+            color: var(--white);
+            line-height: 5rem;
+        }
+        .header_container h1 span{
+            font-size: 5.5rem;
+        }
+        .header_container p{
+            margin-bottom: 5rem;
+            font-size: 2rem;
+            font-family: var(--header-font);
+            color:var(--white);
+        }
+        .header_container form{
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .header_container .input_group{
+            flex: 1 1 180px;
+            display: flex;
+            align-items: center;
+            background-color: var(--white);
+        }
+        .header_container .input_group span{
+            padding: 9px 12px;
+            font-size: 1.25rem;
+            color: var(--white);
+            background-color: var(--text-dark);
+        }
+        .header_container input, .header_container select{
+            width:100%;
+            padding-inline: 1rem;
+            outline: none;
+            border: none;
+            font-size: 1rem;
+            color: var(--text-dark);
+            background: transparent;
+            height: 40px;
+        }
+        .header_container .btn{
+            width:100%;
+            height: 40px;
+        }
+        .feature_container{
+            display: grid;
+            gap: 1rem;
+        }
+        .feature_card {
+            padding: 2rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background-color: var(--white);
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+        }
+        .feature_card img{
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .feature_card h4{
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .feature_card p{
+            color: var(--text-light);
+            line-height: 1.5rem;
+        }
+        .services_grid{
+            display: grid;
+            gap: 2rem;
+            margin-top: 4rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            justify-items: center;
+            justify-content: center;
+        }
+
+        .service_card{
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: 0.3s;
+            text-align: center;
+        }
+
+        .service_card:hover{
+            transform: translateY(-10px);
+        }
+
+        .service_card i{
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .service_card h3{
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            color: var(--text-dark);
+        }
+
+        .service_card p{
+            color: var(--text-light);
+            line-height: 1.7rem;
+        }
+
+        /* FOOTER */
+
+        footer{
+            background-color: var(--primary-color-dark);
+            color: var(--white);
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 5rem;
+        }
+
+        /* RESPONSIVE */
+
+        @media(width > 768px){
+
+            .services_grid{
+                grid-template-columns: repeat(2,1fr);
+            }
+        }
+
+        @media(width > 1024px){
+
+            .services_grid{
+                grid-template-columns: repeat(4,1fr);
+            }
+        }
+        
+        .destination_grid {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: 1fr;
+            margin-top: 2rem;
+        }
+        .destination_card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            background: var(--white);
+            cursor: pointer;
+        }
+        .destination_card img {
+            height: 250px;
+            width: 100%;
+            object-fit: cover;
+        }
+        .destination_content {
+            padding: 1.25rem 1.25rem 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            text-align: center;
+        }
+        .destination_btn {
+            display: block;
+            width: calc(100% - 2.5rem);
+            margin: 0 1.25rem 1.25rem;
+            padding: 0.65rem;
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .destination_btn:hover {
+            background-color: var(--primary-color-dark);
+        }
+        
+        /* ── GOOGLE MAPS STYLE MAP SECTION ── */
+        .gmap_wrapper {
+            position: relative;
+            width: 100%;
+            height: 580px;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            margin-top: 2rem;
+            display: flex;
+        }
+        #map {
+            flex: 1;
+            height: 100%;
+            min-height: 580px;
+            z-index: 1;
+        }
+        /* Sidebar panel */
+        .gmap_sidebar {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 320px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            max-height: calc(100% - 24px);
+        }
+        .gmap_search_bar {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            gap: 8px;
+            border-bottom: 1px solid #e8eaed;
+            background: #fff;
+        }
+        .gmap_search_bar input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 0.95rem;
+            color: #3c4043;
+            font-family: inherit;
+            background: transparent;
+        }
+        .gmap_search_bar input::placeholder { color: #9aa0a6; }
+        .gmap_search_bar .gsearch_icon {
+            color: #4285f4;
+            font-size: 1.2rem;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .gmap_search_bar .gclear_btn {
+            color: #9aa0a6;
+            font-size: 1rem;
+            cursor: pointer;
+            flex-shrink: 0;
+            display: none;
+        }
+        /* Travel mode row */
+        .gmap_modes {
+            display: flex;
+            align-items: center;
+            padding: 6px 10px;
+            gap: 4px;
+            border-bottom: 1px solid #e8eaed;
+            background: #f8f9fa;
+        }
+        .gmode_btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 5px 10px;
+            border-radius: 20px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 0.7rem;
+            color: #5f6368;
+            gap: 2px;
+            transition: background 0.2s;
+        }
+        .gmode_btn i { font-size: 1.15rem; }
+        .gmode_btn.active { background: #e8f0fe; color: #1a73e8; }
+        .gmode_btn:hover:not(.active) { background: #f1f3f4; }
+        /* Route stops */
+        .gmap_stops {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 10px 12px;
+            border-bottom: 1px solid #e8eaed;
+        }
+        .gstop_row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .gstop_dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .gstop_dot.origin { background: #34a853; }
+        .gstop_dot.dest   { background: #ea4335; }
+        .gstop_line {
+            width: 2px; height: 16px;
+            background: #dadce0;
+            margin-left: 4px;
+            flex-shrink: 0;
+        }
+        .gstop_input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 0.88rem;
+            color: #3c4043;
+            background: #f1f3f4;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-family: inherit;
+        }
+        .gstop_input::placeholder { color: #9aa0a6; }
+        .gmap_route_btn {
+            margin: 10px 12px;
+            padding: 9px;
+            background: #1a73e8;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s;
+        }
+        .gmap_route_btn:hover { background: #1558b0; }
+        .gclear_route_btn {
+            margin: 0 12px 10px;
+            padding: 7px;
+            background: transparent;
+            color: #ea4335;
+            border: 1px solid #ea4335;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .gclear_route_btn:hover { background: #fce8e6; }
+        /* Results list */
+        .gmap_results {
+            overflow-y: auto;
+            max-height: 180px;
+            padding: 4px 0;
+        }
+        .gmap_result_item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            cursor: pointer;
+            transition: background 0.15s;
+            font-size: 0.88rem;
+            color: #3c4043;
+        }
+        .gmap_result_item:hover { background: #f1f3f4; }
+        .gmap_result_item i { color: #ea4335; font-size: 1rem; flex-shrink: 0; }
+        /* Weather card floating bottom-right */
+        .gmap_weather_float {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            width: 230px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+            z-index: 10;
+            padding: 12px 14px;
+            font-size: 0.82rem;
+        }
+        .gmap_weather_float h4 {
+            font-size: 0.88rem;
+            color: #3c4043;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .gmap_weather_float h4 i { color: #1a73e8; }
+        .forecast_grid {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .forecast_day_row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 6px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        .forecast_day_row .day_name {
+            font-weight: 600;
+            font-size: 0.78rem;
+            color: #3c4043;
+            width: 65px;
+        }
+        .forecast_day_row .weather_condition {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            color: #5f6368;
+        }
+        .forecast_day_row .weather_condition i {
+            font-size: 1rem;
+            color: #f39c12;
+        }
+        .forecast_day_row .temp_range {
+            font-weight: 500;
+            font-size: 0.78rem;
+            color: #3c4043;
+        }
+        /* Map zoom controls style override */
+        .leaflet-control-zoom {
+            border: none !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.18) !important;
+            border-radius: 8px !important;
+            overflow: hidden;
+        }
+        .leaflet-control-zoom a {
+            width: 36px !important;
+            height: 36px !important;
+            line-height: 36px !important;
+            font-size: 18px !important;
+            color: #3c4043 !important;
+            background: #fff !important;
+        }
+        .leaflet-control-zoom a:hover { background: #f1f3f4 !important; }
+        .leaflet-routing-container { display: none !important; }
+        @media (max-width: 600px) {
+            .gmap_sidebar { width: calc(100% - 24px); }
+            .gmap_weather_float { display: none; }
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+
+        /* AI PLANNER PANELS & CHIPS */
+        .ai_planner_section {
+            background-color: var(--white);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-top: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 2px dashed #0376c140;
+            display: none;
+        }
+        .ai_header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color-dark);
+        }
+        .ai_header i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+        .ai_itinerary_box {
+            background-color: var(--extra-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-left: 5px solid var(--primary-color);
+        }
+        .ai_day {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px dashed #ccc;
+        }
+        .ai_day:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        .ai_day h4 {
+            color: var(--primary-color-dark);
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--header-font);
+        }
+        .ai_timeline_step {
+            margin-left: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+            line-height: 1.5rem;
+        }
+        .ai_timeline_step strong {
+            color: var(--primary-color);
+        }
+        .place_chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background-color: #e6f4fe;
+            color: var(--primary-color);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid #b3e0ff;
+            margin-left: 4px;
+            transition: all 0.2s ease;
+        }
+        .place_chip:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        @media (width > 540px){
+            .feature_container{ grid-template-columns: repeat(2, 1fr); }
+            .destination_grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media(width > 768px){
+            nav{
+                position: static;
+                padding: 2rem 1rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap:2rem;
+            }
+            .nav_header{ padding: 0; background-color: transparent; border:none; width: auto; }
+            .nav_menu_btn{ display: none; }
+            .nav_links{
+                position: static;
+                padding: 0;
+                flex-direction: row;
+                justify-content: flex-end;
+                gap: 3rem;
+                background-color: transparent;
+                transform: none;
+                border: none;
+                width: auto;
+            }
+            .feature_container{ grid-template-columns: repeat(3, 1fr); }
+            .destination_grid{ grid-template-columns: repeat(3, 1fr); }
+            .map_weather_wrapper { grid-template-columns: 3fr 2fr; }
+        }
+    </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="nav_header">
+            <div class="nav_logo">
+                <a href="#" class="logo">Travel planning<span> and recommendation </span></a>
+            </div>
+            <div class="nav_menu_btn" id="menu-btn">
+                <i class="ri-menu-fill"></i>
+            </div>
+        </div>
+        <ul class="nav_links" id="nav-links">
+            <li><a href="#service">Services</a></li>
+            <li><a href="countries.html">Destinations</a></li>
+            <li><a href="#map-section">Maps & Weather</a></li>
+            <li><a href="feed.html">Feedback</a></li>
+            <li><a href="index.html" id="signout-btn" style="color: #dc3545; font-weight: bold;" onclick="localStorage.clear(); sessionStorage.clear();"><i class="ri-logout-box-r-line"></i> Sign Out</a></li>
+        </ul>
+    </nav>
+
+    <header class="header" id="home">
+        <div class="section_container header_container">
+            <h1>TRAVELLER <br> <span>FOR LIFE.</span></h1>
+            <p> Live your best moments</p>
+            
+            <form id="headerSearchForm">
+                <div class="input_group">
+                    <span><i class="ri-map-pin-line"></i></span>
+                    <input type="text" id="header-destination" placeholder="Where are you going?">
+                </div>
+                 <div class="input_group">
+                    <span><i class="ri-map-pin-2-fill"></i></span>
+                    <input type="text" id="header-location" placeholder="City/Location">
+                </div>
+                <div class="input_group">
+                    <span><i class="ri-calendar-schedule-line"></i></span>
+                    <input type="number" id="header-days" placeholder="How many days?" min="1" max="14" value="3">
+                </div>
+                <div class="input_group">
+                    <span><i class="ri-sparkling-2-line"></i></span>
+                    <select id="header-type">
+                        <option value="ai-plan" selected>✨ AI Trip Planner ✨</option>
+                        <option value="standard">Standard Search</option>
+                    </select>
+                </div>
+                <div class="input_group">
+                    <button type="submit" class="btn">Search</button>
+                </div>
+            </form>
+        </div>
+    </header>
+
+    <section class="section_container">
+
+        <h2 class="section_header">What We Offer</h2>
+
+        <p class="section_description">
+            Explore intelligent travel tools and recommendations
+            built for modern travelers around the world.
+        </p>
+
+        <div class="services_grid">
+
+            <!-- SERVICE 1 -->
+
+            <div class="service_card">
+
+                <i class="ri-wallet-3-line"></i>
+                <h3><a href="travel_budget_manager.html" style="color:var(--text-dark);">Budget Management</a></h3>
+
+                <p>
+                    Track travel expenses, manage budgets,
+                    and find affordable travel options easily.
+                </p>
+
+            </div>
+
+            <!-- SERVICE 2 -->
+
+            <div class="service_card">
+
+                <i class="ri-hotel-line"></i>
+                <h3><a href="hotels.html" style="color:var(--text-dark);">Hotel Recommendations</a></h3>
+                <p>
+                    Discover hotels and accommodations
+                    suited to your comfort and budget.
+                </p>
+
+            </div>
+
+            <!-- SERVICE 3 -->
+
+            <div class="service_card">
+
+                <i class="ri-restaurant-line"></i>
+                <h3><a href="halal.html" style="color:var(--text-dark);">Halal Restaurant Finder</a></h3>
+
+                <p>
+                    Locate halal-friendly restaurants
+                    and food services during your travels.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="section_container" id="ai-planner-wrapper">
+        <div class="ai_planner_section" id="ai-planner-block">
+            <div class="ai_header">
+                <i class="ri-robot-3-line"></i>
+                <div>
+                    <h2 style="font-size: 1.8rem; margin-bottom: 2px;">AI Customized Travel Itinerary & Recommendations</h2>
+                    <p style="color: var(--text-light); font-size: 0.9rem;">Click on any suggested place chip (<span class="place_chip" style="cursor:default; pointer-events:none;"><i class="ri-map-pin-fill"></i> Place</span>) to instantly locate it on the live map below!</p>
+                </div>
+            </div>
+            <h3 id="ai-target-title" style="color: var(--text-dark); margin-top:1rem;">Building schedule grids...</h3>
+            <div class="ai_itinerary_box" id="ai-itinerary-output">
+                </div>
+        </div>
+    </section>
+
+    <section class="section_container" id="map-section">
+        <h2 class="section_header">Explore & Plan</h2>
+        <p class="section_description">Search destinations, get directions, and view live weather — all in one place.</p>
+
+        <div class="gmap_wrapper">
+            <!-- Sidebar (Google Maps style) -->
+            <div class="gmap_sidebar" id="gmap-sidebar">
+
+                <!-- Single search bar -->
+                <div class="gmap_search_bar" id="single-search-bar">
+                    <i class="ri-search-line gsearch_icon" onclick="doSingleSearch()"></i>
+                    <input type="text" id="place-input" placeholder="Search Google Maps" onkeydown="if(event.key==='Enter') doSingleSearch()" oninput="toggleClear(this)">
+                    <i class="ri-close-line gclear_btn" id="search-clear-btn" onclick="clearSingleSearch()"></i>
+                    <i class="ri-route-line gsearch_icon" title="Get Directions" onclick="showDirectionsPanel()" style="color:#5f6368;"></i>
+                </div>
+
+                <!-- Directions panel (hidden by default) -->
+                <div id="directions-panel" style="display:none;">
+                    <!-- Travel mode buttons -->
+                    <div class="gmap_modes">
+                        <button class="gmode_btn active" id="mode-driving" onclick="setMode('driving')"><i class="ri-car-fill"></i>Drive</button>
+                        <button class="gmode_btn" id="mode-walking" onclick="setMode('walking')"><i class="ri-walk-fill"></i>Walk</button>
+                        <button class="gmode_btn" id="mode-cycling" onclick="setMode('bicycling')"><i class="ri-bike-fill"></i>Cycle</button>
+                        <button class="gmode_btn" style="margin-left:auto;" onclick="hideDirectionsPanel()" title="Close"><i class="ri-close-line"></i></button>
+                    </div>
+                    <!-- Origin / Destination inputs -->
+                    <div class="gmap_stops">
+                        <div class="gstop_row">
+                            <span class="gstop_dot origin"></span>
+                            <input class="gstop_input" id="origin-input" placeholder="Choose starting point"
+                                oninput="showStopSuggestions('origin-input','origin-suggestions')"
+                                onkeydown="if(event.key==='Enter') showStopSuggestions('origin-input','origin-suggestions')">
+                        </div>
+                        <div id="origin-suggestions" class="gmap_results" style="max-height:120px;"></div>
+                        <div class="gstop_row"><span class="gstop_line" style="margin-left:3px;"></span></div>
+                        <div class="gstop_row">
+                            <span class="gstop_dot dest"></span>
+                            <input class="gstop_input" id="dest-input" placeholder="Choose destination"
+                                oninput="showStopSuggestions('dest-input','dest-suggestions')"
+                                onkeydown="if(event.key==='Enter') showStopSuggestions('dest-input','dest-suggestions')">
+                        </div>
+                        <div id="dest-suggestions" class="gmap_results" style="max-height:120px;"></div>
+                    </div>
+                    <button class="gmap_route_btn" id="searchBtn" onclick="getDirections()"><i class="ri-navigation-fill"></i> Get Directions</button>
+                    <button class="gclear_route_btn" onclick="clearRoute()"><i class="ri-delete-bin-line"></i> Clear Route</button>
+                </div>
+
+                <!-- Search results list -->
+                <div class="gmap_results" id="gmap-results"></div>
+            </div>
+
+            <!-- The actual map -->
+            <div id="map"></div>
+
+            <!-- Floating weather card bottom-right -->
+            <div class="gmap_weather_float" id="weather-float">
+                <h4><i class="ri-cloudy-2-fill"></i> <span id="weather-location-title">Weather Forecast</span></h4>
+                <div class="forecast_grid" id="forecast-container">
+                    <p style="color:#9aa0a6; font-size:0.78rem; text-align:center; padding:6px 0;">Search a place to load weather.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+     <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            © 2026 Travel Planning & Recommendation System.
+            All Rights Reserved.
+        </p>
+
+    </footer>
+
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <script>
+    const menuBtn = document.getElementById("menu-btn");
+    const navLinks = document.getElementById("nav-links");
+
+    menuBtn.addEventListener("click", () => {
+        navLinks.classList.toggle("open");
+    });
+
+    navLinks.addEventListener("click", (e) => {
+        // Don't interfere with the sign out link — it has its own handler
+        if (e.target.closest('#signout-btn')) return;
+        navLinks.classList.remove("open");
+    });
+
+    const scrollRevealOption = {
+        distance: "50px",
+        origin: "bottom",
+        duration: 1000,
+    };
+
+    ScrollReveal().reveal(".header_container h1", scrollRevealOption);
+    ScrollReveal().reveal(".header_container p", { ...scrollRevealOption, delay: 300 });
+    ScrollReveal().reveal(".header_container form", { ...scrollRevealOption, delay: 600 });
+    ScrollReveal().reveal(".feature_card", { duration: 1000, interval: 300 });
+
+    let map;
+    let marker;
+    let routingControl = null;
+    let routeWaypoints = [];
+    let currentMode = 'driving';
+    let fallbackLine = null;
+    let pinMarkers = [];
+
+    function initMap() {
+        const defaultLocation = [23.5880, 58.3829];
+        map = L.map('map', { zoomControl: false }).setView(defaultLocation, 6);
+
+        // Google Maps-like tile layer (CartoDB Positron - clean minimal style)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap &copy; CartoDB'
+        }).addTo(map);
+
+        // Move zoom controls to bottom-right like Google Maps
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+        // Google-style red marker
+        marker = L.marker(defaultLocation, { icon: redIcon() }).addTo(map)
+            .bindPopup('<b>Welcome to Oman!</b>').openPopup();
+
+        fetchWeather(defaultLocation[0], defaultLocation[1], "Muscat");
+    }
+
+    function redIcon() {
+        return L.divIcon({
+            className: '',
+            html: `<div style="
+                width:28px;height:36px;
+                background:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 32%22><path fill=%22%23ea4335%22 d=%22M12 0C7.6 0 4 3.6 4 8c0 6 8 16 8 16s8-10 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z%22/></svg>') no-repeat center/contain;
+            "></div>`,
+            iconSize: [28, 36],
+            iconAnchor: [14, 36],
+            popupAnchor: [0, -36]
+        });
+    }
+
+    function blueIcon() {
+        return L.divIcon({
+            className: '',
+            html: `<div style="
+                width:22px;height:30px;
+                background:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 32%22><path fill=%22%231a73e8%22 d=%22M12 0C7.6 0 4 3.6 4 8c0 6 8 16 8 16s8-10 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z%22/></svg>') no-repeat center/contain;
+            "></div>`,
+            iconSize: [22, 30],
+            iconAnchor: [11, 30],
+            popupAnchor: [0, -30]
+        });
+    }
+
+    // ── Single search ──
+    async function doSingleSearch() {
+        const place = document.getElementById("place-input").value.trim();
+        if (!place) return;
+        const results = await geocode(place);
+        const list = document.getElementById("gmap-results");
+        list.innerHTML = "";
+        if (!results.length) {
+            list.innerHTML = `<div class="gmap_result_item"><i class="ri-map-pin-line"></i> No results found.</div>`;
+            return;
+        }
+        results.slice(0, 5).forEach(r => {
+            const item = document.createElement("div");
+            item.className = "gmap_result_item";
+            item.innerHTML = `<i class="ri-map-pin-fill"></i><span>${r.display_name}</span>`;
+            item.onclick = () => flyToResult(r);
+            list.appendChild(item);
+        });
+    }
+
+    function flyToResult(r) {
+        const lat = parseFloat(r.lat), lon = parseFloat(r.lon);
+        map.flyTo([lat, lon], 14, { duration: 1.2 });
+        marker.setLatLng([lat, lon])
+            .bindPopup(`<b>${r.display_name.split(',')[0]}</b><br><small>${r.display_name.split(',').slice(1,3).join(',')}</small>`)
+            .openPopup();
+        fetchWeather(lat, lon, r.display_name.split(',')[0]);
+        document.getElementById("gmap-results").innerHTML = "";
+        document.getElementById("place-input").value = r.display_name.split(',')[0];
+        document.getElementById("search-clear-btn").style.display = "inline";
+    }
+
+    function toggleClear(input) {
+        document.getElementById("search-clear-btn").style.display = input.value ? "inline" : "none";
+        if (!input.value) document.getElementById("gmap-results").innerHTML = "";
+    }
+
+    function clearSingleSearch() {
+        document.getElementById("place-input").value = "";
+        document.getElementById("search-clear-btn").style.display = "none";
+        document.getElementById("gmap-results").innerHTML = "";
+    }
+
+    // ── Directions panel ──
+    function showDirectionsPanel() {
+        document.getElementById("single-search-bar").style.display = "none";
+        document.getElementById("directions-panel").style.display = "block";
+    }
+
+    function hideDirectionsPanel() {
+        document.getElementById("directions-panel").style.display = "none";
+        document.getElementById("single-search-bar").style.display = "flex";
+    }
+
+    function setMode(mode) {
+        currentMode = mode;
+        document.querySelectorAll('.gmode_btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('mode-' + mode)?.classList.add('active');
+    }
+
+    // ── Directions panel stop suggestions ──
+    // Store confirmed LatLng for each stop after user picks from dropdown
+    const confirmedStops = { origin: null, dest: null };
+
+    async function showStopSuggestions(inputId, suggestionsId) {
+        const query = document.getElementById(inputId).value.trim();
+        const list = document.getElementById(suggestionsId);
+        // Clear confirmed coords when user edits the field
+        const key = inputId === 'origin-input' ? 'origin' : 'dest';
+        confirmedStops[key] = null;
+        list.innerHTML = '';
+        if (query.length < 2) return;
+        const results = await geocode(query);
+        if (!results.length) {
+            list.innerHTML = `<div class="gmap_result_item"><i class="ri-map-pin-line"></i> No results found.</div>`;
+            return;
+        }
+        results.forEach(r => {
+            const item = document.createElement('div');
+            item.className = 'gmap_result_item';
+            item.innerHTML = `<i class="ri-map-pin-fill"></i><span>${r.display_name}</span>`;
+            item.onclick = () => {
+                confirmedStops[key] = { lat: parseFloat(r.lat), lon: parseFloat(r.lon), name: r.display_name.split(',')[0] };
+                document.getElementById(inputId).value = r.display_name.split(',').slice(0, 2).join(',');
+                list.innerHTML = '';
+            };
+            list.appendChild(item);
+        });
+    }
+
+    async function getDirections() {
+        const originVal = document.getElementById("origin-input").value.trim();
+        const destVal   = document.getElementById("dest-input").value.trim();
+        if (!originVal || !destVal) { alert("Please enter both origin and destination."); return; }
+
+        // Use confirmed picks if available, otherwise geocode and take top result
+        let originLatLng, destLatLng;
+
+        if (confirmedStops.origin) {
+            originLatLng = L.latLng(confirmedStops.origin.lat, confirmedStops.origin.lon);
+        } else {
+            const res = await geocode(originVal);
+            if (!res.length) { alert("Could not find origin location. Please select from the suggestions dropdown."); return; }
+            originLatLng = L.latLng(parseFloat(res[0].lat), parseFloat(res[0].lon));
+        }
+
+        if (confirmedStops.dest) {
+            destLatLng = L.latLng(confirmedStops.dest.lat, confirmedStops.dest.lon);
+        } else {
+            const res = await geocode(destVal);
+            if (!res.length) { alert("Could not find destination. Please select from the suggestions dropdown."); return; }
+            destLatLng = L.latLng(parseFloat(res[0].lat), parseFloat(res[0].lon));
+        }
+
+        if (routingControl) map.removeControl(routingControl);
+        if (fallbackLine) { map.removeLayer(fallbackLine); fallbackLine = null; }
+
+        // Draw a straight dashed line immediately so something is always visible
+        fallbackLine = L.polyline([originLatLng, destLatLng], {
+            color: '#1a73e8', weight: 4, opacity: 0.7, dashArray: '10, 8'
+        }).addTo(map);
+        map.fitBounds(L.latLngBounds([originLatLng, destLatLng]).pad(0.3));
+
+        // OSRM profile mapping
+        const profileMap = { driving: 'driving', walking: 'foot', bicycling: 'bike' };
+        const profile = profileMap[currentMode] || 'driving';
+
+        routingControl = L.Routing.control({
+            waypoints: [originLatLng, destLatLng],
+            router: L.Routing.osrmv1({
+                serviceUrl: `https://router.project-osrm.org/route/v1`,
+                profile: profile
+            }),
+            routeWhileDragging: false,
+            show: false,
+            addWaypoints: false,
+            lineOptions: {
+                styles: [{ color: '#1a73e8', weight: 5, opacity: 0.85 }]
+            },
+            createMarker: function(i, wp) {
+                const icon = i === 0 ? greenIcon() : redIcon();
+                const label = i === 0 ? `<b>Start:</b> ${originVal}` : `<b>End:</b> ${destVal}`;
+                return L.marker(wp.latLng, { icon }).bindPopup(label).openPopup();
+            }
+        }).addTo(map);
+
+        routingControl.on('routesfound', function(e) {
+            if (fallbackLine) { map.removeLayer(fallbackLine); fallbackLine = null; }
+            map.fitBounds(L.latLngBounds([originLatLng, destLatLng]).pad(0.3));
+        });
+
+        fetchWeather(destLatLng.lat, destLatLng.lng, destVal);
+    }
+
+    function greenIcon() {
+        return L.divIcon({
+            className: '',
+            html: `<div style="width:22px;height:30px;background:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 32%22><path fill=%22%2334a853%22 d=%22M12 0C7.6 0 4 3.6 4 8c0 6 8 16 8 16s8-10 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z%22/></svg>') no-repeat center/contain;"></div>`,
+            iconSize: [22, 30], iconAnchor: [11, 30], popupAnchor: [0, -30]
+        });
+    }
+
+    function clearRoute() {
+        if (routingControl) { map.removeControl(routingControl); routingControl = null; }
+        if (fallbackLine) { map.removeLayer(fallbackLine); fallbackLine = null; }
+        routeWaypoints = [];
+        confirmedStops.origin = null;
+        confirmedStops.dest = null;
+        document.getElementById("origin-input").value = "";
+        document.getElementById("dest-input").value = "";
+        document.getElementById("origin-suggestions").innerHTML = "";
+        document.getElementById("dest-suggestions").innerHTML = "";
+        map.setView([23.5880, 58.3829], 6);
+    }
+
+    // ── pinSuggestedPlace (for AI planner chips) ──
+    function pinSuggestedPlace(placeName) {
+        document.getElementById("place-input").value = placeName;
+        // Hide directions panel if open, show search bar
+        document.getElementById("directions-panel").style.display = "none";
+        document.getElementById("single-search-bar").style.display = "flex";
+        doSingleSearch();
+        document.getElementById("map-section").scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ── Geocoding helper ──
+    // Tries multiple free geocoding APIs with fallback for reliability
+    async function geocode(query) {
+        // Provider 1: Nominatim (OSM) - works fine from browsers, no custom headers needed
+        try {
+            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=10&addressdetails=1&accept-language=en`;
+            const res = await fetch(url);
+            if (res.ok) {
+                const results = await res.json();
+                if (results && results.length) {
+                    results.sort((a, b) => parseFloat(b.importance || 0) - parseFloat(a.importance || 0));
+                    return results.slice(0, 5);
+                }
+            }
+        } catch {}
+
+        // Provider 2: Photon (Komoot) - also OSM-based, different CORS policy
+        try {
+            const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5&lang=en`;
+            const res = await fetch(url);
+            if (res.ok) {
+                const data = await res.json();
+                const features = data.features || [];
+                if (features.length) {
+                    return features.map(f => ({
+                        lat: f.geometry.coordinates[1],
+                        lon: f.geometry.coordinates[0],
+                        display_name: [f.properties.name, f.properties.city, f.properties.country].filter(Boolean).join(', '),
+                        importance: 0.5
+                    }));
+                }
+            }
+        } catch {}
+
+        // Provider 3: OpenCage free tier (2500 req/day, no signup needed for demo key)
+        try {
+            const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(query)}&key=6d0e711d72d74daeb2b0bfd2a5cd190e&limit=5&language=en&no_annotations=1`;
+            const res = await fetch(url);
+            if (res.ok) {
+                const data = await res.json();
+                const results = data.results || [];
+                if (results.length) {
+                    return results.map(r => ({
+                        lat: r.geometry.lat,
+                        lon: r.geometry.lng,
+                        display_name: r.formatted,
+                        importance: r.confidence / 10
+                    }));
+                }
+            }
+        } catch {}
+
+        return [];
+    }
+
+    function getWeatherInterpretation(code) {
+        if (code === 0) return { text: "Clear Sky", icon: "ri-sun-fill" };
+        if ([1, 2, 3].includes(code)) return { text: "Partly Cloudy", icon: "ri-partly-cloudy-fill" };
+        if ([45, 48].includes(code)) return { text: "Foggy", icon: "ri-mist-fill" };
+        if ([51, 53, 55, 61, 63, 65].includes(code)) return { text: "Rainy", icon: "ri-rainy-fill" };
+        if ([71, 73, 75, 77, 85, 86].includes(code)) return { text: "Snowy", icon: "ri-snowy-fill" };
+        if ([95, 96, 99].includes(code)) return { text: "Thunderstorm", icon: "ri-thunderstorm-fill" };
+        return { text: "Cloudy", icon: "ri-cloudy-fill" };
+    }
+
+    async function fetchWeather(lat, lon, locationName) {
+        const weatherContainer = document.getElementById("forecast-container");
+        document.getElementById("weather-location-title").textContent = locationName;
+        
+        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto`;
+        
+        try {
+            const response = await fetch(weatherUrl);
+            const data = await response.json();
+            
+            if (data && data.daily) {
+                weatherContainer.innerHTML = ""; 
+                
+                for(let i = 0; i < 3; i++) {
+                    const dateRaw = new Date(data.daily.time[i]);
+                    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                    const dayName = i === 0 ? "Today" : daysOfWeek[dateRaw.getDay()];
+                    
+                    const maxTemp = Math.round(data.daily.temperature_2m_max[i]);
+                    const minTemp = Math.round(data.daily.temperature_2m_min[i]);
+                    const condition = getWeatherInterpretation(data.daily.weathercode[i]);
+                    
+                    const rowHtml = `
+                        <div class="forecast_day_row">
+                            <span class="day_name">${dayName}</span>
+                            <span class="weather_condition">
+                                <i class="${condition.icon}"></i> ${condition.text}
+                            </span>
+                            <span class="temp_range">${maxTemp}°C / ${minTemp}°C</span>
+                        </div>
+                    `;
+                    weatherContainer.innerHTML += rowHtml;
+                }
+            } else {
+                weatherContainer.innerHTML = `<p style="color:red; font-size:0.9rem;">Unable to process metrics for this region.</p>`;
+            }
+        } catch (error) {
+            console.error("Weather error:", error);
+            weatherContainer.innerHTML = `<p style="color:red; font-size:0.9rem;">Weather sync timeout error.</p>`;
+        }
+    }
+
+    // ── Weather ──
+
+    // DYNAMIC GENERATIVE AI ENGINE WITH SPECIFIC PLACE MATCHES & CLICK-TO-MAP CHIPS
+    async function generateAITripPlan(destinationName, totalDays, category) {
+        const aiPlannerBlock = document.getElementById("ai-planner-block");
+        const aiTitle = document.getElementById("ai-target-title");
+        const aiOutput = document.getElementById("ai-itinerary-output");
+
+        const tripCategory = category || document.getElementById("header-category")?.value || 'Cultural & History';
+
+        aiPlannerBlock.style.display = "block";
+        aiTitle.innerHTML = `✨ Generating your <span style="color:var(--primary-color); font-weight:700;">${totalDays}-Day</span> itinerary for: <span style="color:var(--primary-color); text-transform:capitalize;">${destinationName}</span>...`;
+        aiOutput.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--text-light);"><i class="ri-loader-4-line" style="font-size:2rem;animation:spin 1s linear infinite;display:block;margin-bottom:1rem;"></i>AI is building your personalized itinerary...</div>`;
+        aiPlannerBlock.scrollIntoView({ behavior: 'smooth' });
+
+        const prompt = `Create a ${totalDays}-day travel itinerary for ${destinationName} focused on: ${tripCategory}.
+Return ONLY a valid JSON array with no markdown, no code fences, no explanation. Format exactly like this:
+[{"day":1,"title":"Day 1 – Place Name","morning":"activity description","morningPlace":"Exact Place Name, City","afternoon":"activity description","afternoonPlace":"Exact Place Name, City","evening":"activity description","eveningPlace":"Exact Place Name, City"}]
+Include morning, afternoon, and evening for each of the ${totalDays} days. Make place names specific and searchable on a map.`;
+
+        try {
+            // ── Local AI-style itinerary generator (no API needed) ────
+            const itinerary = generateLocalItinerary(destinationName, totalDays, tripCategory);
+            if (!itinerary.length) throw new Error('Could not generate itinerary.');
+
+            aiTitle.innerHTML = `✨ Your <span style="color:var(--primary-color); font-weight:700;">${totalDays}-Day</span> Itinerary for: <span style="color:var(--primary-color); text-transform:capitalize;">${destinationName}</span>`;
+            let planHtml = '';
+            for (const day of itinerary) {
+                const sp = (p) => (p||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+                planHtml += `
+                    <div class="ai_day">
+                        <h4><i class="ri-calendar-event-fill"></i> DAY ${day.day}: ${day.title}</h4>
+                        <div class="ai_timeline_step">
+                            🌅 <strong>Morning:</strong> ${day.morning}
+                            ${day.morningPlace ? `<span class="place_chip" onclick="pinSuggestedPlace('${sp(day.morningPlace)}')"><i class="ri-map-pin-fill"></i> ${day.morningPlace}</span>` : ''}
+                        </div>
+                        <div class="ai_timeline_step">
+                            ☀️ <strong>Afternoon:</strong> ${day.afternoon}
+                            ${day.afternoonPlace ? `<span class="place_chip" onclick="pinSuggestedPlace('${sp(day.afternoonPlace)}')"><i class="ri-map-pin-fill"></i> ${day.afternoonPlace}</span>` : ''}
+                        </div>
+                        <div class="ai_timeline_step">
+                            🌙 <strong>Evening:</strong> ${day.evening}
+                            ${day.eveningPlace ? `<span class="place_chip" onclick="pinSuggestedPlace('${sp(day.eveningPlace)}')"><i class="ri-map-pin-fill"></i> ${day.eveningPlace}</span>` : ''}
+                        </div>
+                    </div>`;
+            }
+            aiOutput.innerHTML = planHtml;
+            aiPlannerBlock.scrollIntoView({ behavior: 'smooth' });
+
+        } catch(err) {
+            console.error('AI Trip Planner error:', err);
+            aiTitle.innerHTML = `⚠️ Could not generate itinerary for <span style="color:var(--primary-color);">${destinationName}</span>`;
+            aiOutput.innerHTML = `<p style="color:#dc3545;background:#f8d7da;padding:1rem;border-radius:8px;font-size:0.9rem;"><strong>Error:</strong> ${err.message}</p>`;
+        }
+    }
+
+    // ── Local itinerary generator ─────────────────────────────────────────
+    function generateLocalItinerary(dest, days, category) {
+        const d = dest.trim();
+
+        // Category-based activity pools
+        const pools = {
+            'Cultural & History': {
+                morning:   ['Visit the historic old town and its ancient architecture','Explore the national museum and heritage galleries','Tour the grand cathedral and surrounding religious landmarks','Walk through the archaeological site and ruins','Attend a guided heritage walking tour of the city center'],
+                afternoon: ['Visit the traditional craft market and artisan workshops','Explore the royal palace or government historic buildings','Tour the cultural center and local art exhibitions','Visit the local history museum and permanent collections','Walk the historic waterfront or old merchant quarter'],
+                evening:   ['Enjoy a traditional local dinner at an authentic restaurant','Watch a cultural performance or folk music show','Stroll the illuminated historic district','Dine at a rooftop restaurant with city views','Join a food and history evening walking tour']
+            },
+            'Adventure & Outdoors': {
+                morning:   ['Hike the scenic mountain trail at sunrise','Kayak along the coastal or river route','Join a rock-climbing session at the natural cliff face','Mountain bike through the national park trails','Take an early-morning desert or jungle safari'],
+                afternoon: ['Paraglide or zip-line over the valley','Snorkel or scuba dive at the reef','White-water rafting on the river rapids','Off-road 4x4 tour through rugged terrain','Horseback riding through the countryside'],
+                evening:   ['Bonfire and barbecue at the campsite','Sunset boat cruise along the coast','Star-gazing session at a dark-sky spot','Outdoor cinema or night hike with guides','Enjoy grilled local cuisine at an outdoor terrace']
+            },
+            'Food & Culinary': {
+                morning:   ['Visit the bustling local morning market for fresh produce','Join a hands-on cooking class focusing on local breakfast dishes','Tour a traditional bakery and sample fresh pastries','Coffee tasting at a specialty roastery','Explore the spice market with a local chef guide'],
+                afternoon: ['Take a street food walking tour of the best local stalls','Visit a winery, brewery, or distillery for a tasting session','Attend a private cooking masterclass','Explore the gourmet food hall and local delicacies','Visit a traditional farm-to-table restaurant for lunch'],
+                evening:   ['Multi-course dinner at the city\'s most celebrated restaurant','Join a sunset cocktail and tapas experience','Night food market tour sampling local specialties','Fine dining with panoramic city views','Dessert and sweets tour of traditional patisseries']
+            },
+            'Relaxation & Wellness': {
+                morning:   ['Sunrise yoga session at a scenic outdoor location','Guided meditation walk through a botanical garden','Relax on the beach with morning stretching','Soak in thermal baths or natural hot springs','Gentle morning swim at a peaceful lagoon'],
+                afternoon: ['Full-body spa treatment and massage','Hammam or traditional steam bath experience','Float therapy and aromatherapy session','Gentle nature walk through a serene park','Afternoon tea and relaxation at a luxury garden resort'],
+                evening:   ['Sunset meditation on the waterfront','Candle-lit dinner at a tranquil garden restaurant','Evening sound bath or wellness workshop','Gentle moonlit beach walk','Herbal tea ceremony and reflection at the spa retreat']
+            },
+            'Family & Kids': {
+                morning:   ['Visit the interactive children\'s science museum','Morning at the city zoo or wildlife sanctuary','Explore the aquarium and marine life exhibits','Go-karting or family adventure park','Visit a hands-on history museum with kids\' activities'],
+                afternoon: ['Boat ride or ferry trip around the harbour','Visit the amusement or theme park','Explore the natural history museum','Cycling through the family-friendly park trails','Attend a magic show or family theater performance'],
+                evening:   ['Family dinner at a fun themed restaurant','Evening at the bowling alley or mini golf','Outdoor movie night or cultural show','Ice cream tour and evening stroll at the promenade','Family board game café and dessert evening']
+            },
+            'Budget Travel': {
+                morning:   ['Free walking tour of the city center highlights','Visit the free public museum or gallery','Explore the local street art district on foot','Hike a free public trail with panoramic views','Browse the free public botanical garden'],
+                afternoon: ['Picnic lunch in the city park with local market food','Explore free beaches or public swimming spots','Visit free viewpoints and lookout terraces','Wander through the colorful local neighborhood markets','Cycle the free or low-cost public bike routes'],
+                evening:   ['Cook a local meal from fresh market ingredients','Enjoy cheap local street food at the night market','Free outdoor concert or public cultural event','Sunset at a free public viewpoint','Budget-friendly local tavern or food stall dinner']
+            },
+            'Luxury Travel': {
+                morning:   ['Private helicopter tour over the city and coastline','Yacht charter for a morning cruise','Private guided tour of the finest museums with exclusive access','Hot air balloon ride over scenic landscapes','Golf at a championship course with a private caddy'],
+                afternoon: ['Michelin-starred lunch with wine pairing','Private shopping experience at designer boutiques','Exclusive spa treatment at a 5-star resort','Private guided tour of a royal estate or vineyard','Sailing excursion on a luxury catamaran'],
+                evening:   ['Chef\'s table tasting menu at an award-winning restaurant','Rooftop cocktail bar with skyline views','Private concert or cultural performance','Luxury sunset cruise with champagne','Exclusive night at the opera or ballet followed by fine dining']
+            }
+        };
+
+        const cat = pools[category] || pools['Cultural & History'];
+
+        // Place name templates that incorporate the destination
+        const placeTemplates = [
+            [`${d} Old Town`, `${d} City Museum`, `${d} Central Bazaar`],
+            [`${d} Waterfront`, `${d} Heritage Quarter`, `${d} Grand Mosque`],
+            [`${d} National Park`, `${d} Mountain Trail`, `${d} Corniche`],
+            [`${d} Botanical Garden`, `${d} Royal Palace`, `${d} Night Market`],
+            [`${d} Harbour`, `${d} Spice Souk`, `${d} Viewpoint Hill`],
+            [`${d} Beach`, `${d} Cultural Center`, `${d} Old Fort`],
+            [`${d} Traditional Village`, `${d} Art District`, `${d} Sunset Point`],
+        ];
+
+        const pick = (arr, seed) => arr[seed % arr.length];
+        const itinerary = [];
+
+        for (let i = 0; i < days; i++) {
+            const seed = i * 3;
+            const places = placeTemplates[(i * 2) % placeTemplates.length];
+            const places2 = placeTemplates[(i * 2 + 1) % placeTemplates.length];
+            itinerary.push({
+                day: i + 1,
+                title: `Day ${i + 1} — ${d}`,
+                morning:       pick(cat.morning, seed),
+                morningPlace:  places[0],
+                afternoon:     pick(cat.afternoon, seed + 1),
+                afternoonPlace: places2[1] || places[1],
+                evening:       pick(cat.evening, seed + 2),
+                eveningPlace:  places[2]
+            });
+        }
+        return itinerary;
+    }
+
+
+    function triggerDirectDestination(cityName) {
+        document.getElementById("header-destination").value = cityName;
+        document.getElementById("header-type").value = "ai-plan";
+        document.getElementById("place-input").value = cityName;
+        doSingleSearch();
+        const daysCount = parseInt(document.getElementById("header-days").value) || 3;
+        const category = document.getElementById("header-category")?.value || 'Cultural & History';
+        generateAITripPlan(cityName, daysCount, category);
+    }
+
+    document.getElementById("headerSearchForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const destQuery = document.getElementById("header-destination").value.trim();
+        const locQuery = document.getElementById("header-location").value.trim();
+        const daysCount = parseInt(document.getElementById("header-days").value) || 3;
+        const plannerType = document.getElementById("header-type").value;
+        const category = document.getElementById("header-category")?.value || 'Cultural & History';
+
+        if (!destQuery && !locQuery) {
+            alert("Please state a destination or area location.");
+            return;
+        }
+
+        const targetSearchString = locQuery || destQuery;
+        
+        if (targetSearchString) {
+            document.getElementById("place-input").value = targetSearchString;
+            doSingleSearch();
+        }
+
+        if (plannerType === "ai-plan") {
+            generateAITripPlan(targetSearchString, daysCount, category);
+        } else {
+            document.getElementById("ai-planner-block").style.display = "none";
+            document.getElementById("map-section").scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+
+    const signoutBtn = document.getElementById("signout-btn");
+    if (signoutBtn) {
+        signoutBtn.addEventListener("click", function(e) {
+            e.stopPropagation();
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = "index.html";
+        });
+    }
+
+    window.onload = initMap;
+    </script>
+</body>
+</html>

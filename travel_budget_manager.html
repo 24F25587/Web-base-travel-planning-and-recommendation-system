@@ -1,0 +1,403 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Travel Budget Management</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.page { padding: 1.5rem 0; }
+.top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.top-bar h1 { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
+.top-bar .trip-select select { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 6px 12px; font-size: 13px; color: var(--color-text-primary); }
+.metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+.metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 14px 16px; }
+.metric .label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+.metric .value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.metric .sub { font-size: 11px; margin-top: 3px; }
+.sub.ok { color: #3B6D11; }
+.sub.warn { color: #BA7517; }
+.sub.danger { color: #A32D2D; }
+.main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.125rem 1.25rem; }
+.card-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 1rem; display: flex; align-items: center; gap: 6px; }
+.budget-bar-row { margin-bottom: 12px; }
+.budget-bar-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.budget-bar-label span:first-child { color: var(--color-text-primary); font-weight: 500; }
+.bar-track { height: 7px; background: var(--color-background-secondary); border-radius: 99px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 99px; transition: width 0.4s; }
+.expense-list { display: flex; flex-direction: column; gap: 8px; }
+.expense-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.expense-row:last-child { border-bottom: none; }
+.exp-icon { width: 32px; height: 32px; border-radius: var(--border-radius-md); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+.exp-info { flex: 1; }
+.exp-info .name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+.exp-info .date { font-size: 11px; color: var(--color-text-tertiary); }
+.exp-amount { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+.exp-cat { font-size: 10px; padding: 2px 7px; border-radius: 99px; }
+.tips-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.tip-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 14px; }
+.tip-card .tip-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+.tip-card .tip-val { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+.tip-card .tip-sub { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+.add-btn { display: flex; align-items: center; gap: 6px; font-size: 13px; padding: 7px 14px; border-radius: var(--border-radius-md); cursor: pointer; border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-primary); }
+.add-btn:hover { background: var(--color-background-secondary); }
+.modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.35); display: flex; align-items: center; justify-content: center; border-radius: var(--border-radius-lg); z-index: 10; display: none; }
+.modal { background: var(--color-background-primary); border-radius: var(--border-radius-lg); padding: 1.5rem; width: 320px; border: 0.5px solid var(--color-border-secondary); }
+.modal h3 { font-size: 16px; font-weight: 500; margin-bottom: 1.25rem; color: var(--color-text-primary); }
+.modal label { font-size: 12px; color: var(--color-text-secondary); display: block; margin-bottom: 4px; margin-top: 10px; }
+.modal input, .modal select { width: 100%; }
+.modal-btns { display: flex; gap: 8px; margin-top: 1.25rem; }
+.modal-btns button { flex: 1; }
+.btn-primary { background: var(--color-text-primary); color: var(--color-background-primary); border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-size: 13px; cursor: pointer; }
+.btn-primary:hover { opacity: 0.85; }
+.page-wrap { position: relative; }
+.chart-section { margin-bottom: 14px; }
+.donut-wrap { display: flex; align-items: center; gap: 1.5rem; }
+.legend-list { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.leg-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--color-text-secondary); }
+.leg-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.leg-name { flex: 1; color: var(--color-text-primary); }
+.leg-pct { font-weight: 500; color: var(--color-text-primary); }
+.tab-row { display: flex; gap: 4px; margin-bottom: 14px; }
+.tab { padding: 6px 14px; border-radius: var(--border-radius-md); font-size: 13px; cursor: pointer; border: 0.5px solid var(--color-border-tertiary); background: transparent; color: var(--color-text-secondary); }
+.tab.active { background: var(--color-text-primary); color: var(--color-background-primary); border-color: transparent; }
+.add-btn { background: #ffffff; border: 0.5px solid var(--color-border-secondary); color: var(--color-text-primary); cursor: pointer; }
+.modal { background: #ffffff; border: 0.5px solid var(--color-border-secondary); }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); display: none; align-items: center; justify-content: center; z-index: 10; }
+
+</style>
+</head>
+<body>
+<div class="page-wrap">
+  <div class="page">
+    <div class="top-bar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <h1>Travel Budget</h1>
+      </div>
+    </div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <select id="tripSelect" style="background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:6px 12px;font-size:13px;color:var(--color-text-primary);">
+      <option>🇯🇵 Tokyo — Jun 2026</option>
+      <option>🇮🇹 Rome — Aug 2026</option>
+      <option>🇹🇭 Bangkok — Oct 2026</option>
+    </select>
+    
+   <button class="add-btn" onclick="openModal('budget')">
+    <i class="ti ti-plus"></i> Insert Budget
+</button>
+<button class="add-btn" onclick="openModal('expense')">
+    <i class="ti ti-plus"></i> Add expense
+</button>
+  </div>
+</div>
+
+<div class="metrics" id="metrics"></div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="setTab(0,this)">Overview</button>
+  <button class="tab" onclick="setTab(1,this)">Expenses</button>
+  <button class="tab" onclick="setTab(2,this)">Savings tips</button>
+</div>
+
+<div id="tab0">
+  <div class="main-grid">
+    <div class="card">
+      <div class="card-title"><i class="ti ti-chart-pie" aria-hidden="true"></i> Spending by category</div>
+      <div class="donut-wrap">
+        <canvas id="donutChart" width="130" height="130" role="img" aria-label="Donut chart of spending by category">Accommodation 38%, Food 22%, Transport 18%, Activities 14%, Shopping 8%</canvas>
+        <div class="legend-list" id="legendList"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><i class="ti ti-chart-bar" aria-hidden="true"></i> Budget vs spent</div>
+      <div id="budgetBars"></div>
+    </div>
+  </div>
+  <div class="card chart-section">
+    <div class="card-title"><i class="ti ti-trending-up" aria-hidden="true"></i> Daily spending (last 7 days)</div>
+    <div style="position:relative;width:100%;height:160px;"><canvas id="lineChart" role="img" aria-label="Line chart showing daily spending over 7 days">Daily spending varies between $40 and $180.</canvas></div>
+  </div>
+</div>
+
+<div id="tab1" style="display:none;">
+  <div class="card">
+    <div class="card-title"><i class="ti ti-receipt" aria-hidden="true"></i> Recent expenses</div>
+    <div class="expense-list" id="expenseList"></div>
+  </div>
+</div>
+
+<div id="tab2" style="display:none;">
+  <div class="card" style="margin-bottom:14px;">
+    <div class="card-title"><i class="ti ti-bulb" aria-hidden="true"></i> Affordable travel tips</div>
+    <div class="tips-grid" id="tipsGrid"></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-currency-dollar" aria-hidden="true"></i> Budget forecast</div>
+    <div id="forecastArea"></div>
+  </div>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3 id="modalTitle">Add Item</h3>
+    
+    <div id="budgetFields" style="display:none;">
+      <label>Amount to Add (USD)</label>
+      <input type="number" id="inTotalBudget" placeholder="0.00" min="0" step="0.01" />
+      <label>Add to Category</label>
+      <select id="budgetCat"><option>Accommodation</option><option>Food</option><option>Transport</option><option>Activities</option><option>Shopping</option></select>
+    </div>
+
+    <div id="expenseFields">
+      <label>Description</label>
+      <input type="text" id="expDesc" placeholder="e.g. Dinner at Shinjuku" />
+      <label>Amount (USD)</label>
+      <input type="number" id="expAmt" placeholder="0.00" min="0" step="0.01" />
+      <label>Category</label>
+      <select id="expCat">
+        <option>Accommodation</option>
+        <option>Food</option>
+        <option>Transport</option>
+        <option>Activities</option>
+        <option>Shopping</option>
+      </select>
+      <label>Date</label>
+      <input type="date" id="expDate" />
+    </div>
+
+    <div class="modal-btns">
+      <button class="add-btn" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveData()">Save</button>
+    </div>
+  </div>
+</div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function renderAll() {
+  renderMetrics();
+  renderBars();
+  renderExpenses();
+}
+
+function updateGlobalBudget(newAmount) {
+    const budgetDisplay = document.getElementById('total-budget-display');
+    if(budgetDisplay) {
+        budgetDisplay.innerText = `$${parseFloat(newAmount).toLocaleString()}`;
+    }
+    renderAll();
+}
+const COLORS = { Accommodation:'#185FA5', Food:'#0F6E56', Transport:'#3C3489', Activities:'#BA7517', Shopping:'#993556' };
+const BG = { Accommodation:'#E6F1FB', Food:'#E1F5EE', Transport:'#EEEDFE', Activities:'#FAEEDA', Shopping:'#FBEAF0' };
+
+const DEFAULT_BUDGET = { Accommodation: 800, Food: 450, Transport: 350, Activities: 300, Shopping: 200 };
+const DEFAULT_EXPENSES = [
+  { desc:'Shinjuku Hotel (3 nights)', amt:312, cat:'Accommodation', date:'2026-06-10' },
+  { desc:'Ramen at Ichiran', amt:18, cat:'Food', date:'2026-06-10' },
+  { desc:'JR Pass (7-day)', amt:275, cat:'Transport', date:'2026-06-09' },
+  { desc:'teamLab Planets ticket', amt:32, cat:'Activities', date:'2026-06-11' },
+  { desc:'Sushi omakase dinner', amt:85, cat:'Food', date:'2026-06-11' },
+  { desc:'Akihabara electronics', amt:140, cat:'Shopping', date:'2026-06-12' },
+  { desc:'Kyoto day trip', amt:55, cat:'Transport', date:'2026-06-12' },
+  { desc:'Asakusa food tour', amt:48, cat:'Activities', date:'2026-06-13' },
+  { desc:'Convenience store meals', amt:34, cat:'Food', date:'2026-06-13' },
+  { desc:'Capsule hotel night', amt:62, cat:'Accommodation', date:'2026-06-14' },
+];
+
+function loadData() {
+  try {
+    const se = localStorage.getItem('tbm_expenses');
+    const sb = localStorage.getItem('tbm_budget');
+    return {
+      expenses: se ? JSON.parse(se) : JSON.parse(JSON.stringify(DEFAULT_EXPENSES)),
+      budget: sb ? JSON.parse(sb) : Object.assign({}, DEFAULT_BUDGET)
+    };
+  } catch(e) {
+    return { expenses: JSON.parse(JSON.stringify(DEFAULT_EXPENSES)), budget: Object.assign({}, DEFAULT_BUDGET) };
+  }
+}
+
+function saveToStorage() {
+  try {
+    localStorage.setItem('tbm_expenses', JSON.stringify(expenses));
+    localStorage.setItem('tbm_budget', JSON.stringify(BUDGET));
+  } catch(e) {}
+}
+
+const _loaded = loadData();
+let expenses = _loaded.expenses;
+const BUDGET = _loaded.budget;
+
+
+function totalByCat() {
+  const t = {};
+  expenses.forEach(e => { t[e.cat] = (t[e.cat]||0) + e.amt; });
+  return t;
+}
+function totalSpent() { return expenses.reduce((s,e)=>s+e.amt,0); }
+function totalBudget() { return Object.values(BUDGET).reduce((a,b)=>a+b,0); }
+
+function renderMetrics() {
+  const spent = totalSpent(), budget = totalBudget(), rem = budget - spent;
+  const pct = Math.round(spent/budget*100);
+  const dailyAvg = Math.round(spent / 5);
+  document.getElementById('metrics').innerHTML = `
+    <div class="metric"><div class="label"><i class="ti ti-wallet" aria-hidden="true"></i> Total budget</div><div class="value">$${budget.toLocaleString()}</div><div class="sub" style="color:var(--color-text-tertiary)">Tokyo trip</div></div>
+    <div class="metric"><div class="label"><i class="ti ti-credit-card" aria-hidden="true"></i> Spent so far</div><div class="value">$${spent.toLocaleString()}</div><div class="sub ${pct>80?'danger':pct>60?'warn':'ok'}">${pct}% of budget</div></div>
+    <div class="metric"><div class="label"><i class="ti ti-piggy-bank" aria-hidden="true"></i> Remaining</div><div class="value">$${rem.toLocaleString()}</div><div class="sub ${rem<200?'danger':rem<400?'warn':'ok'}">${rem>=0?'On track':'Overspent'}</div></div>
+    <div class="metric"><div class="label"><i class="ti ti-calendar" aria-hidden="true"></i> Daily average</div><div class="value">$${dailyAvg}</div><div class="sub" style="color:var(--color-text-tertiary)">5 days elapsed</div></div>
+  `;
+}
+
+function renderBars() {
+  const cats = totalByCat();
+  document.getElementById('budgetBars').innerHTML = Object.entries(BUDGET).map(([cat, bud])=>{
+    const spent = cats[cat]||0, pct = Math.min(100, Math.round(spent/bud*100));
+    const col = pct>90?'#E24B4A':pct>70?'#BA7517':COLORS[cat];
+    return `<div class="budget-bar-row">
+      <div class="budget-bar-label"><span>${cat}</span><span>$${spent} / $${bud}</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${col};"></div></div>
+    </div>`;
+  }).join('');
+}
+
+let donutInst, lineInst;
+function renderDonut() {
+  const cats = totalByCat();
+  const labels = Object.keys(COLORS);
+  const vals = labels.map(l=>cats[l]||0);
+  const total = vals.reduce((a,b)=>a+b,0);
+  document.getElementById('legendList').innerHTML = labels.map((l,i)=>`
+    <div class="leg-row"><div class="leg-dot" style="background:${COLORS[l]}"></div><span class="leg-name">${l}</span><span class="leg-pct">${total?Math.round(vals[i]/total*100):0}%</span></div>
+  `).join('');
+  if(donutInst) donutInst.destroy();
+  donutInst = new Chart(document.getElementById('donutChart'),{
+    type:'doughnut',
+    data:{ labels, datasets:[{ data:vals, backgroundColor:Object.values(COLORS), borderWidth:2, borderColor:'transparent', hoverOffset:4 }] },
+    options:{ responsive:false, plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>`${ctx.label}: $${ctx.raw}`}} }, cutout:'65%' }
+  });
+}
+
+function renderLine() {
+  const days = ['Jun 9','Jun 10','Jun 11','Jun 12','Jun 13','Jun 14','Jun 15'];
+  const data = [275, 330, 435, 630, 712, 1061, null];
+  if(lineInst) lineInst.destroy();
+  lineInst = new Chart(document.getElementById('lineChart'),{
+    type:'line',
+    data:{ labels: days, datasets:[
+      { label:'Cumulative spend', data, borderColor:'#185FA5', backgroundColor:'rgba(24,95,165,0.08)', fill:true, tension:0.4, pointRadius:4, pointBackgroundColor:'#185FA5', spanGaps:false },
+      { label:'Budget line', data:[null,null,null,null,null,null,2100], borderColor:'#E24B4A', borderDash:[5,4], pointRadius:0, fill:false }
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ y:{ beginAtZero:true, ticks:{callback:v=>'$'+v, font:{size:11}}, grid:{color:'rgba(128,128,128,0.12)'} }, x:{ ticks:{font:{size:11}}, grid:{display:false} } } }
+  });
+}
+
+function renderExpenses() {
+  const icons = { Accommodation:'ti-building', Food:'ti-tools-kitchen-2', Transport:'ti-car', Activities:'ti-camera', Shopping:'ti-shopping-bag' };
+  document.getElementById('expenseList').innerHTML = [...expenses].reverse().map(e=>`
+    <div class="expense-row">
+      <div class="exp-icon" style="background:${BG[e.cat]};color:${COLORS[e.cat]}"><i class="ti ${icons[e.cat]||'ti-receipt'}" aria-hidden="true"></i></div>
+      <div class="exp-info"><div class="name">${e.desc}</div><div class="date">${e.date}</div></div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+        <div class="exp-amount">$${e.amt.toFixed(2)}</div>
+        <span class="exp-cat" style="background:${BG[e.cat]};color:${COLORS[e.cat]}">${e.cat}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderTips() {
+  document.getElementById('tipsGrid').innerHTML = `
+    <div class="tip-card"><div class="tip-label"><i class="ti ti-plane" aria-hidden="true"></i> Best flight window</div><div class="tip-val">Tue–Thu</div><div class="tip-sub">Avg 23% cheaper</div></div>
+    <div class="tip-card"><div class="tip-label"><i class="ti ti-bed" aria-hidden="true"></i> Accommodation</div><div class="tip-val">Capsule hotels</div><div class="tip-sub">From $45/night</div></div>
+    <div class="tip-card"><div class="tip-label"><i class="ti ti-tools-kitchen-2" aria-hidden="true"></i> Food savings</div><div class="tip-val">Konbini + ramen</div><div class="tip-sub">$8–15 per meal</div></div>
+    <div class="tip-card"><div class="tip-label"><i class="ti ti-train" aria-hidden="true"></i> Transport pass</div><div class="tip-val">IC Card</div><div class="tip-sub">Skip single tickets</div></div>
+    <div class="tip-card"><div class="tip-label"><i class="ti ti-tag" aria-hidden="true"></i> Free attractions</div><div class="tip-val">12 free sites</div><div class="tip-sub">Shrines, parks, markets</div></div>
+    <div class="tip-card"><div class="tip-label"><i class="ti ti-clock" aria-hidden="true"></i> Best booking time</div><div class="tip-val">6–8 weeks out</div><div class="tip-sub">Optimal price window</div></div>
+  `;
+  const spent = totalSpent(), budget = totalBudget(), daysLeft = 5;
+  const dailyAllowed = Math.round((budget-spent)/daysLeft);
+  document.getElementById('forecastArea').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1rem;">
+      <div class="metric"><div class="label">Days remaining</div><div class="value">5</div></div>
+      <div class="metric"><div class="label">Daily allowance</div><div class="value">$${dailyAllowed}</div><div class="sub ${dailyAllowed<100?'danger':'ok'}">to stay on budget</div></div>
+      <div class="metric"><div class="label">Projected total</div><div class="value">$${Math.round(spent + dailyAllowed*5)}</div><div class="sub ok">Within budget</div></div>
+    </div>
+    <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.7;">
+      At your current pace, you'll finish <strong style="color:var(--color-text-primary)">$${Math.round(budget - (spent + dailyAllowed*5))} under budget</strong>. Consider splurging on a tasting menu or a day trip to Nikko!
+    </div>
+  `;
+}
+
+function setTab(n, el) {
+  [0,1,2].forEach(i => {
+    document.getElementById('tab'+i).style.display = i===n?'block':'none';
+  });
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  if(n===0){ setTimeout(()=>{ renderDonut(); renderLine(); },50); }
+  if(n===2){ renderTips(); }
+}
+
+let mode = 'expense'; // track current mode
+
+function openModal(newMode = 'expense') {
+    mode = newMode;
+    document.getElementById('modalOverlay').style.display = 'flex';
+    document.getElementById('modalTitle').innerText = (mode === 'budget') ? 'Insert Budget' : 'Add Expense';
+    
+    // Toggle field visibility
+    document.getElementById('budgetFields').style.display = (mode === 'budget') ? 'block' : 'none';
+    document.getElementById('expenseFields').style.display = (mode === 'budget') ? 'none' : 'block';
+}
+
+// Function to close the modal
+function closeModal() {
+    document.getElementById('modalOverlay').style.display = 'none';
+}
+
+// Function that handles the saving logic
+function addExpense() {
+  const desc = document.getElementById('expDesc').value.trim();
+  const amt = parseFloat(document.getElementById('expAmt').value);
+  const cat = document.getElementById('expCat').value;
+  const date = document.getElementById('expDate').value || new Date().toISOString().slice(0,10);
+  if (!desc || isNaN(amt) || amt <= 0) { alert('Please enter a valid description and amount.'); return; }
+  expenses.push({ desc, amt, cat, date });
+  saveToStorage();
+  document.getElementById('expDesc').value = '';
+  document.getElementById('expAmt').value = '';
+  renderAll();
+  closeModal();
+}
+
+function saveData() {
+    if (mode === 'budget') {
+        const inputVal = document.getElementById('inTotalBudget').value;
+        const addAmount = parseFloat(inputVal);
+        const cat = document.getElementById('budgetCat').value;
+        if (isNaN(addAmount) || addAmount <= 0) {
+            alert("Please enter a valid amount greater than 0.");
+            return;
+        }
+        BUDGET[cat] = (BUDGET[cat] || 0) + addAmount;
+        document.getElementById('inTotalBudget').value = '';
+        saveToStorage();
+        renderAll();
+        closeModal();
+    } else {
+        addExpense();
+    }
+}
+renderMetrics();
+renderBars();
+renderExpenses();
+setTimeout(()=>{ renderDonut(); renderLine(); }, 100);
+</script>
+</html>

@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Countries Explorer</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.9.0/fonts/remixicon.css" rel="stylesheet"/>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --primary: #0376c1;
+            --primary-dark: #002954;
+            --text-dark: #12110f;
+            --text-light: #6b7280;
+            --extra-light: #fbf7f6;
+            --white: #ffffff;
+            --card-shadow: 0 4px 20px rgba(0,0,0,0.07);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body { font-family: "Montserrat", sans-serif; background: var(--extra-light); color: var(--text-dark); min-height: 100vh; }
+
+        nav {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 1rem 2rem;
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-size: 1.3rem; font-weight: 800; color: var(--primary); text-decoration: none; }
+        .logo span { color: var(--text-dark); }
+        .btn_back { display: flex; align-items: center; gap: 0.5rem; color: var(--text-light); text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
+        .btn_back:hover { color: var(--primary); }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            color: white; text-align: center; padding: 3.5rem 1rem 2.5rem;
+        }
+        .hero h1 { font-family: "Merriweather", serif; font-size: 2.4rem; margin-bottom: 0.5rem; }
+        .hero p { font-size: 1rem; opacity: 0.85; margin-bottom: 2rem; }
+        .stats-row { display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap; }
+        .stat { text-align: center; }
+        .stat-num { font-size: 1.8rem; font-weight: 800; }
+        .stat-label { font-size: 0.75rem; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        .controls {
+            max-width: 1200px; margin: 2rem auto 1.5rem; padding: 0 1.5rem;
+            display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;
+        }
+        .search-wrap { flex: 1; min-width: 220px; position: relative; }
+        .search-wrap i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 1.1rem; }
+        .search-wrap input {
+            width: 100%; padding: 0.75rem 1rem 0.75rem 2.6rem;
+            border: 1px solid #dee2e6; border-radius: 10px;
+            font-family: inherit; font-size: 0.95rem; outline: none;
+            background: var(--white); transition: 0.2s;
+        }
+        .search-wrap input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(3,118,193,0.1); }
+        select {
+            padding: 0.75rem 1rem; border: 1px solid #dee2e6; border-radius: 10px;
+            font-family: inherit; font-size: 0.9rem; background: var(--white);
+            color: var(--text-dark); outline: none; cursor: pointer; transition: 0.2s;
+        }
+        select:focus { border-color: var(--primary); }
+        .sort-btn {
+            padding: 0.75rem 1.2rem; border: 1px solid #dee2e6; border-radius: 10px;
+            background: var(--white); font-family: inherit; font-size: 0.9rem; cursor: pointer;
+            display: flex; align-items: center; gap: 0.4rem; color: var(--text-dark); transition: 0.2s;
+        }
+        .sort-btn:hover, .sort-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .results-count { max-width: 1200px; margin: 0 auto 1rem; padding: 0 1.5rem; font-size: 0.85rem; color: var(--text-light); }
+
+        .grid {
+            max-width: 1200px; margin: 0 auto 3rem; padding: 0 1.5rem;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem;
+        }
+
+        .card {
+            background: var(--white); border-radius: 14px; box-shadow: var(--card-shadow);
+            overflow: hidden; transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer; animation: fadeIn 0.4s ease both;
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.12); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card-flag { width: 100%; height: 150px; object-fit: cover; display: block; background: #f0f2f5; }
+        .card-body { padding: 1.1rem 1.2rem 1.3rem; }
+        .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.8rem; }
+        .card-name { font-size: 1rem; font-weight: 700; color: var(--primary-dark); line-height: 1.3; }
+        .card-code { font-size: 0.7rem; background: #e8f4fd; color: var(--primary); padding: 2px 7px; border-radius: 20px; font-weight: 700; white-space: nowrap; margin-left: 0.5rem; flex-shrink: 0; }
+        .card-info { display: flex; flex-direction: column; gap: 0.4rem; }
+        .info-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--text-light); }
+        .info-row i { font-size: 0.95rem; color: var(--primary); flex-shrink: 0; }
+        .info-row span { color: var(--text-dark); font-weight: 500; }
+        .card-region { display: inline-block; margin-top: 0.8rem; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 3px 10px; border-radius: 20px; background: #f0f9ff; color: var(--primary); }
+
+        .btn-plan {
+            display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+            width: 100%; margin-top: 0.9rem; padding: 0.65rem 1rem;
+            background: var(--primary); color: white; border: none; border-radius: 8px;
+            font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn-plan:hover { background: var(--primary-dark); transform: scale(1.02); }
+
+        .loader { text-align: center; padding: 4rem; color: var(--text-light); font-size: 1rem; grid-column: 1/-1; }
+        .loader i { font-size: 2rem; display: block; margin-bottom: 1rem; animation: spin 1s linear infinite; color: var(--primary); }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .empty { text-align: center; padding: 4rem; color: var(--text-light); grid-column: 1/-1; }
+        .empty i { font-size: 2.5rem; display: block; margin-bottom: 1rem; }
+
+        /* COUNTRY MODAL */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+            z-index: 200; align-items: center; justify-content: center; padding: 1rem;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            background: var(--white); border-radius: 18px; max-width: 480px; width: 100%;
+            overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease; max-height: 90vh; overflow-y: auto;
+        }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-flag { width: 100%; height: 200px; object-fit: cover; }
+        .modal-body { padding: 1.5rem 2rem 2rem; }
+        .modal-title { font-family: "Merriweather", serif; font-size: 1.5rem; color: var(--primary-dark); margin-bottom: 1.2rem; }
+        .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .modal-item label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-light); display: block; margin-bottom: 2px; }
+        .modal-item p { font-size: 0.9rem; font-weight: 600; color: var(--text-dark); }
+        .btn-plan-modal {
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            width: 100%; margin-top: 1.2rem; padding: 0.9rem;
+            background: var(--primary); color: white; border: none; border-radius: 10px;
+            font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.2s;
+        }
+        .btn-plan-modal:hover { background: var(--primary-dark); }
+        .modal-close {
+            display: block; width: 100%; margin-top: 0.7rem; padding: 0.75rem;
+            background: #f1f3f5; color: var(--text-dark); border: none; border-radius: 10px;
+            font-family: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        .modal-close:hover { background: #dee2e6; }
+
+        /* TRIP PLANNER MODAL */
+        .planner-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            z-index: 300; align-items: center; justify-content: center; padding: 1rem;
+        }
+        .planner-overlay.open { display: flex; }
+        .planner-modal {
+            background: var(--white); border-radius: 18px; max-width: 640px; width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25); animation: slideUp 0.3s ease;
+            max-height: 90vh; overflow-y: auto;
+        }
+        .planner-header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white; padding: 1.8rem 2rem 1.5rem;
+            display: flex; align-items: flex-start; justify-content: space-between;
+        }
+        .planner-header h2 { font-family: "Merriweather", serif; font-size: 1.4rem; margin-bottom: 0.3rem; }
+        .planner-header p { font-size: 0.85rem; opacity: 0.8; }
+        .planner-close-x { background: rgba(255,255,255,0.2); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: 0.2s; }
+        .planner-close-x:hover { background: rgba(255,255,255,0.35); }
+        .planner-body { padding: 1.8rem 2rem; }
+
+        /* Day selector */
+        .selector-label { font-size: 0.8rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+        .day-picker { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.4rem; }
+        .day-btn {
+            width: 46px; height: 46px; border-radius: 10px; border: 2px solid #dee2e6;
+            background: var(--white); font-family: inherit; font-size: 0.9rem; font-weight: 700;
+            cursor: pointer; transition: 0.2s; color: var(--text-dark);
+        }
+        .day-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .day-btn.selected { background: var(--primary); border-color: var(--primary); color: white; }
+
+        /* Trip aim selector */
+        .aim-picker { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.4rem; }
+        .aim-btn {
+            padding: 0.5rem 1rem; border-radius: 20px; border: 2px solid #dee2e6;
+            background: var(--white); font-family: inherit; font-size: 0.82rem; font-weight: 600;
+            cursor: pointer; transition: 0.2s; color: var(--text-dark); display: flex; align-items: center; gap: 0.35rem;
+        }
+        .aim-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .aim-btn.selected { background: var(--primary); border-color: var(--primary); color: white; }
+
+        /* Waiting hint */
+        .waiting-hint {
+            text-align: center; padding: 1.5rem; color: var(--text-light);
+            font-size: 0.9rem; background: #f8f9fa; border-radius: 12px;
+            border: 2px dashed #dee2e6; margin-top: 0.5rem;
+        }
+        .waiting-hint i { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; color: #dee2e6; }
+
+        /* Itinerary output */
+        .itinerary-title { font-family: "Merriweather", serif; font-size: 1.1rem; color: var(--primary-dark); margin-bottom: 0.6rem; }
+        .itinerary-aim-badge {
+            display: inline-flex; align-items: center; gap: 0.35rem;
+            background: #e8f4fd; color: var(--primary); padding: 4px 12px;
+            border-radius: 20px; font-size: 0.78rem; font-weight: 700;
+        }
+
+        /* Schedule timeline */
+        .schedule { display: flex; flex-direction: column; gap: 0; margin-top: 1rem; }
+        .day-tab-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+        .day-tab {
+            padding: 0.35rem 0.9rem; border-radius: 20px; border: 2px solid #dee2e6;
+            background: white; font-size: 0.78rem; font-weight: 700; cursor: pointer;
+            font-family: inherit; color: var(--text-dark); transition: 0.2s;
+        }
+        .day-tab.active { background: var(--primary); border-color: var(--primary); color: white; }
+        .day-schedule { display: none; }
+        .day-schedule.active { display: block; }
+        .day-header {
+            background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+            color: white; border-radius: 12px 12px 0 0; padding: 0.9rem 1.2rem;
+            display: flex; align-items: center; gap: 0.75rem;
+        }
+        .day-header .day-num { font-size: 1.6rem; font-weight: 800; line-height: 1; }
+        .day-header .day-info { display: flex; flex-direction: column; }
+        .day-header .day-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.75; }
+        .day-header .day-title { font-family: "Merriweather", serif; font-size: 0.95rem; font-weight: 700; }
+        .timeline { background: white; border: 1px solid #e9ecef; border-top: none; border-radius: 0 0 12px 12px; padding: 0.5rem 0; margin-bottom: 1rem; }
+        .slot {
+            display: flex; gap: 0; align-items: stretch;
+            border-bottom: 1px solid #f1f3f5; position: relative;
+        }
+        .slot:last-child { border-bottom: none; }
+        .slot-time {
+            width: 68px; flex-shrink: 0; padding: 0.75rem 0.6rem 0.75rem 1rem;
+            font-size: 0.7rem; font-weight: 700; color: var(--primary);
+            text-align: right; border-right: 2px solid #e8f4fd;
+            display: flex; align-items: flex-start; padding-top: 0.85rem;
+        }
+        .slot-dot {
+            width: 10px; height: 10px; border-radius: 50%; background: var(--primary);
+            border: 2px solid white; box-shadow: 0 0 0 2px var(--primary);
+            flex-shrink: 0; margin: 0.85rem -6px 0 -5px; z-index: 1; align-self: flex-start;
+        }
+        .slot-content { flex: 1; padding: 0.75rem 1rem; }
+        .slot-title { font-size: 0.88rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.2rem; }
+        .slot-desc { font-size: 0.8rem; color: var(--text-light); line-height: 1.4; }
+        .slot-tag {
+            display: inline-block; font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.05em; padding: 2px 8px; border-radius: 20px;
+            background: #e8f4fd; color: var(--primary); margin-top: 0.3rem;
+        }
+
+        .ai-loading { text-align: center; padding: 2rem; color: var(--text-light); }
+        .ai-loading i { font-size: 1.8rem; display: block; margin-bottom: 0.8rem; animation: spin 1s linear infinite; color: var(--primary); }
+        .ai-loading p { font-size: 0.88rem; }
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 1.6rem; }
+            .modal-grid { grid-template-columns: 1fr; }
+            .planner-body { padding: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="homepage.html" class="logo">Travel planning<span> system</span></a>
+    <a href="homepage.html" class="btn_back"><i class="ri-arrow-left-line"></i> Back to Dashboard</a>
+</nav>
+
+<div class="hero">
+    <h1>🌍 World Countries Explorer</h1>
+    <p>Discover capitals, populations, currencies, and more for every country on Earth</p>
+    <div class="stats-row">
+        <div class="stat"><div class="stat-num" id="total-count">—</div><div class="stat-label">Countries</div></div>
+        <div class="stat"><div class="stat-num" id="region-count">—</div><div class="stat-label">Regions</div></div>
+        <div class="stat"><div class="stat-num" id="showing-count">—</div><div class="stat-label">Showing</div></div>
+    </div>
+</div>
+
+<div class="controls">
+    <div class="search-wrap">
+        <i class="ri-search-line"></i>
+        <input type="text" id="search" placeholder="Search countries...">
+    </div>
+    <select id="region-filter">
+        <option value="">All Regions</option>
+        <option value="Africa">Africa</option>
+        <option value="Americas">Americas</option>
+        <option value="Asia">Asia</option>
+        <option value="Europe">Europe</option>
+        <option value="Oceania">Oceania</option>
+        <option value="Antarctic">Antarctic</option>
+    </select>
+    <button class="sort-btn" id="sort-pop" onclick="toggleSort('population')"><i class="ri-group-line"></i> Population</button>
+    <button class="sort-btn" id="sort-name" onclick="toggleSort('name')"><i class="ri-sort-asc"></i> A–Z</button>
+</div>
+
+<div class="results-count" id="results-count"></div>
+
+<div class="grid" id="grid">
+    <div class="loader"><i class="ri-loader-4-line"></i>Loading countries from around the world…</div>
+</div>
+
+<!-- Country Detail Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeCountryModal(event)">
+    <div class="modal">
+        <img id="modal-flag" class="modal-flag" src="" alt="">
+        <div class="modal-body">
+            <div class="modal-title" id="modal-name"></div>
+            <div class="modal-grid">
+                <div class="modal-item"><label>Capital</label><p id="modal-capital"></p></div>
+                <div class="modal-item"><label>Region</label><p id="modal-region"></p></div>
+                <div class="modal-item"><label>Population</label><p id="modal-population"></p></div>
+                <div class="modal-item"><label>Area</label><p id="modal-area"></p></div>
+                <div class="modal-item"><label>Currency</label><p id="modal-currency"></p></div>
+                <div class="modal-item"><label>Languages</label><p id="modal-languages"></p></div>
+            </div>
+            <button class="btn-plan-modal" id="modal-plan-btn"><i class="ri-route-line"></i> Plan the Trip</button>
+            <button class="modal-close" onclick="document.getElementById('modal-overlay').classList.remove('open')">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Trip Planner Modal -->
+<div class="planner-overlay" id="planner-overlay">
+    <div class="planner-modal">
+        <div class="planner-header">
+            <div>
+                <h2 id="planner-title">Plan Your Trip</h2>
+                <p id="planner-subtitle">Select how many days you have</p>
+            </div>
+            <button class="planner-close-x" onclick="closePlanner()"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="planner-body">
+            <div class="selector-label">How many days is your trip?</div>
+            <div class="day-picker">
+                <button class="day-btn" onclick="selectDays(1)">1</button>
+                <button class="day-btn" onclick="selectDays(2)">2</button>
+                <button class="day-btn" onclick="selectDays(3)">3</button>
+                <button class="day-btn" onclick="selectDays(4)">4</button>
+                <button class="day-btn" onclick="selectDays(5)">5</button>
+                <button class="day-btn" onclick="selectDays(6)">6</button>
+                <button class="day-btn" onclick="selectDays(7)">7</button>
+                <button class="day-btn" onclick="selectDays(10)">10</button>
+                <button class="day-btn" onclick="selectDays(14)">14</button>
+            </div>
+
+            <div class="selector-label">What is the aim of your trip?</div>
+            <div class="aim-picker">
+                <button class="aim-btn" onclick="selectAim(this, 'Cultural & History')"><i class="ri-ancient-gate-line"></i> Cultural & History</button>
+                <button class="aim-btn" onclick="selectAim(this, 'Adventure & Nature')"><i class="ri-plant-line"></i> Adventure & Nature</button>
+                <button class="aim-btn" onclick="selectAim(this, 'Food & Cuisine')"><i class="ri-restaurant-line"></i> Food & Cuisine</button>
+                <button class="aim-btn" onclick="selectAim(this, 'Relaxation & Beach')"><i class="ri-sun-line"></i> Relaxation & Beach</button>
+                <button class="aim-btn" onclick="selectAim(this, 'Shopping & City Life')"><i class="ri-shopping-bag-line"></i> Shopping & City Life</button>
+                <button class="aim-btn" onclick="selectAim(this, 'Family Friendly')"><i class="ri-parent-line"></i> Family Friendly</button>
+            </div>
+
+            <div id="itinerary-output">
+                <div class="waiting-hint">
+                    <i class="ri-map-2-line"></i>
+                    Select your trip days and aim above — your itinerary will appear here automatically.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let allCountries = [];
+let sortField = null;
+let sortDir = 1;
+let selectedDays = 0;
+let currentCountry = '';
+let selectedAim = '';
+
+async function loadCountries() {
+    try {
+        const res = await fetch('https://restcountries.com/v3.1/all?fields=name,capital,region,population,area,currencies,languages,flags,cca2');
+        allCountries = await res.json();
+        const regions = new Set(allCountries.map(c => c.region).filter(Boolean));
+        document.getElementById('total-count').textContent = allCountries.length;
+        document.getElementById('region-count').textContent = regions.size;
+        renderCards(allCountries);
+    } catch (err) {
+        document.getElementById('grid').innerHTML = `<div class="empty"><i class="ri-wifi-off-line"></i>Failed to load countries. Please check your internet connection.</div>`;
+    }
+}
+
+function formatPop(n) {
+    if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
+    if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+    if (n >= 1e3) return (n / 1e3).toFixed(0) + 'K';
+    return n?.toLocaleString() || '—';
+}
+
+function getCurrency(c) {
+    if (!c.currencies) return '—';
+    const keys = Object.keys(c.currencies);
+    if (!keys.length) return '—';
+    const cur = c.currencies[keys[0]];
+    return `${cur.name || keys[0]} (${cur.symbol || keys[0]})`;
+}
+
+function getLanguages(c) {
+    if (!c.languages) return '—';
+    return Object.values(c.languages).slice(0, 3).join(', ') || '—';
+}
+
+function renderCards(countries) {
+    const grid = document.getElementById('grid');
+    document.getElementById('showing-count').textContent = countries.length;
+    document.getElementById('results-count').textContent = `Showing ${countries.length} countries`;
+
+    if (!countries.length) {
+        grid.innerHTML = `<div class="empty"><i class="ri-map-2-line"></i>No countries match your search.</div>`;
+        return;
+    }
+
+    grid.innerHTML = countries.map((c, i) => `
+        <div class="card" style="animation-delay:${Math.min(i * 0.03, 0.5)}s" onclick="openModal(${allCountries.indexOf(c)})">
+            <img class="card-flag" src="${c.flags?.svg || c.flags?.png || ''}" alt="${c.name.common} flag" loading="lazy">
+            <div class="card-body">
+                <div class="card-header">
+                    <div class="card-name">${c.name.common}</div>
+                    <span class="card-code">${c.cca2}</span>
+                </div>
+                <div class="card-info">
+                    <div class="info-row"><i class="ri-government-line"></i>Capital: <span>${c.capital?.[0] || '—'}</span></div>
+                    <div class="info-row"><i class="ri-group-line"></i>Population: <span>${formatPop(c.population)}</span></div>
+                    <div class="info-row"><i class="ri-money-dollar-circle-line"></i>Currency: <span>${getCurrency(c)}</span></div>
+                    <div class="info-row"><i class="ri-translate-2"></i>Language: <span>${getLanguages(c)}</span></div>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.8rem;">
+                    <span class="card-region">${c.region || 'Unknown'}</span>
+                </div>
+                <button class="btn-plan" onclick="event.stopPropagation(); openPlanner('${c.name.common.replace(/'/g, "\\'")}')">
+                    <i class="ri-route-line"></i> Plan the Trip
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function filter() {
+    const q = document.getElementById('search').value.toLowerCase();
+    const region = document.getElementById('region-filter').value;
+    let result = allCountries.filter(c => {
+        const matchName = c.name.common.toLowerCase().includes(q) || c.capital?.[0]?.toLowerCase().includes(q);
+        const matchRegion = !region || c.region === region;
+        return matchName && matchRegion;
+    });
+    if (sortField === 'population') result.sort((a, b) => sortDir * (b.population - a.population));
+    else if (sortField === 'name') result.sort((a, b) => sortDir * a.name.common.localeCompare(b.name.common));
+    renderCards(result);
+}
+
+function toggleSort(field) {
+    if (sortField === field) sortDir *= -1;
+    else { sortField = field; sortDir = 1; }
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`sort-${field === 'population' ? 'pop' : 'name'}`).classList.add('active');
+    filter();
+}
+
+function openModal(index) {
+    const c = allCountries[index];
+    document.getElementById('modal-flag').src = c.flags?.svg || c.flags?.png || '';
+    document.getElementById('modal-name').textContent = c.name.common;
+    document.getElementById('modal-capital').textContent = c.capital?.[0] || '—';
+    document.getElementById('modal-region').textContent = c.region || '—';
+    document.getElementById('modal-population').textContent = c.population?.toLocaleString() || '—';
+    document.getElementById('modal-area').textContent = c.area ? c.area.toLocaleString() + ' km²' : '—';
+    document.getElementById('modal-currency').textContent = getCurrency(c);
+    document.getElementById('modal-languages').textContent = getLanguages(c);
+    document.getElementById('modal-plan-btn').onclick = () => {
+        document.getElementById('modal-overlay').classList.remove('open');
+        openPlanner(c.name.common);
+    };
+    document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeCountryModal(e) {
+    if (e.target === document.getElementById('modal-overlay')) {
+        document.getElementById('modal-overlay').classList.remove('open');
+    }
+}
+
+// ── TRIP PLANNER ──────────────────────────────────────────────
+
+function openPlanner(countryName) {
+    currentCountry = countryName;
+    selectedDays = 0;
+    selectedAim = '';
+    document.getElementById('planner-title').textContent = `Plan Your Trip to ${countryName}`;
+    document.getElementById('planner-subtitle').textContent = 'Choose your days and trip style';
+    document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.aim-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('itinerary-output').innerHTML = `
+        <div class="waiting-hint">
+            <i class="ri-map-2-line"></i>
+            Select your trip days and aim above — your itinerary will appear here automatically.
+        </div>`;
+    document.getElementById('planner-overlay').classList.add('open');
+}
+
+function closePlanner() {
+    document.getElementById('planner-overlay').classList.remove('open');
+}
+
+function selectDays(n) {
+    selectedDays = n;
+    document.querySelectorAll('.day-btn').forEach(b => {
+        b.classList.toggle('selected', parseInt(b.textContent) === n);
+    });
+    tryAutoGenerate();
+}
+
+function selectAim(btn, aim) {
+    selectedAim = aim;
+    document.querySelectorAll('.aim-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    tryAutoGenerate();
+}
+
+function tryAutoGenerate() {
+    if (selectedDays > 0 && selectedAim) generateItinerary();
+}
+
+// ── LOCAL ITINERARY ENGINE (no API needed) ──────────────────────
+
+const aimIcons = {
+    'Cultural & History':   'ri-ancient-gate-line',
+    'Adventure & Nature':   'ri-plant-line',
+    'Food & Cuisine':       'ri-restaurant-line',
+    'Relaxation & Beach':   'ri-sun-line',
+    'Shopping & City Life': 'ri-shopping-bag-line',
+    'Family Friendly':      'ri-parent-line'
+};
+const TIMES = ['8:00 AM','10:00 AM','12:00 PM','2:30 PM','5:00 PM'];
+const TAGS  = ['Morning','Mid-Morning','Lunch','Afternoon','Evening'];
+
+const ACTIVITY_POOLS = {
+    'Cultural & History': [
+        { name:'Historic Old Town Walk',        desc:'Stroll through centuries-old streets and colonial architecture.' },
+        { name:'National Museum Visit',          desc:'Explore artifacts tracing the country\'s rich cultural heritage.' },
+        { name:'Ancient Temple or Cathedral',    desc:'Marvel at sacred architecture and intricate stonework.' },
+        { name:'Local Heritage Market',          desc:'Browse handcrafted goods and traditional artisan stalls.' },
+        { name:'Historical Landmark Tour',       desc:'Visit iconic monuments and learn their fascinating stories.' },
+        { name:'Palace or Royal Residence',      desc:'Tour grand halls once home to kings and rulers.' },
+        { name:'Archaeological Site',            desc:'Walk among ruins that shaped an ancient civilisation.' },
+        { name:'Traditional Village Visit',      desc:'Experience authentic rural life and age-old customs.' },
+        { name:'War Memorial & Museum',          desc:'Pay respects and learn about pivotal historical events.' },
+        { name:'Cultural Folklore Show',         desc:'Watch traditional dance, music and storytelling performances.' },
+        { name:'Art Gallery & Fine Arts',        desc:'Admire local and national masterworks in a curated gallery.' },
+        { name:'Religious Quarter Exploration',  desc:'Wander historic mosques, churches or temples side by side.' },
+        { name:'Colonial Architecture Tour',     desc:'Photograph stunning buildings from the colonial era.' },
+        { name:'Indigenous Cultural Centre',     desc:'Learn about the customs and traditions of local peoples.' },
+        { name:'Evening Lantern Walk',           desc:'Join a guided night tour through illuminated historic lanes.' },
+    ],
+    'Adventure & Nature': [
+        { name:'National Park Hike',             desc:'Trek scenic trails through pristine wilderness and viewpoints.' },
+        { name:'Waterfall Discovery Trek',        desc:'Hike to a stunning cascade hidden in lush jungle.' },
+        { name:'Wildlife Safari Drive',          desc:'Spot exotic animals roaming freely in their natural habitat.' },
+        { name:'Kayaking or River Rafting',      desc:'Paddle thrilling rapids or calm waterways through the landscape.' },
+        { name:'Mountain Summit Climb',          desc:'Ascend a challenging peak for breathtaking panoramic views.' },
+        { name:'Zip-line Canopy Adventure',      desc:'Fly through the treetops on an exhilarating zip-line course.' },
+        { name:'Snorkelling or Diving Reef',     desc:'Explore vibrant coral reefs teeming with marine life.' },
+        { name:'Volcano Crater Walk',            desc:'Trek the rim of an active or dormant volcanic crater.' },
+        { name:'Bird Watching at Dawn',          desc:'Spot rare and colourful species in their natural habitat.' },
+        { name:'Cave Exploration Tour',          desc:'Venture into dramatic limestone caverns and stalactite chambers.' },
+        { name:'Sunset Viewpoint Trek',          desc:'Hike to a high ridge for a golden-hour panorama.' },
+        { name:'Jungle Night Safari',            desc:'Discover nocturnal wildlife on a guided after-dark walk.' },
+        { name:'Cycling through Countryside',    desc:'Pedal scenic rural roads past farms and rolling hills.' },
+        { name:'Hot Spring Soak',               desc:'Relax in natural geothermal pools amid mountain scenery.' },
+        { name:'Rock Climbing Session',         desc:'Scale natural rock faces with expert guides and gear.' },
+    ],
+    'Food & Cuisine': [
+        { name:'Street Food Morning Tour',       desc:'Sample iconic local bites from bustling street vendors.' },
+        { name:'Local Market Cooking Class',     desc:'Shop fresh ingredients then cook a traditional recipe.' },
+        { name:'Signature Dish Tasting',         desc:'Try the country\'s most famous dish at a top restaurant.' },
+        { name:'Coffee or Tea Plantation Tour',  desc:'Visit a working farm and taste freshly harvested brews.' },
+        { name:'Seafood Harbour Lunch',          desc:'Feast on the freshest catch right at the fishing docks.' },
+        { name:'Traditional Bakery Visit',       desc:'Taste freshly baked local breads and sweet pastries.' },
+        { name:'Night Food Market',              desc:'Graze on dozens of local dishes at a lively night market.' },
+        { name:'Wine or Spirits Tasting',        desc:'Sample regional wines, spirits or craft beers at a cellar.' },
+        { name:'Farm-to-Table Dinner',           desc:'Enjoy a seasonal meal prepared from locally sourced produce.' },
+        { name:'Spice Bazaar Exploration',       desc:'Wander fragrant spice markets and discover exotic flavours.' },
+        { name:'Dessert & Sweets Trail',         desc:'Hop between bakeries sampling iconic local sweet treats.' },
+        { name:'Rooftop Dining Experience',      desc:'Dine under the stars with panoramic city views.' },
+        { name:'Fermented Foods Workshop',       desc:'Learn to make traditional fermented and pickled local foods.' },
+        { name:'Food History Museum',            desc:'Discover the cultural and culinary heritage of the region.' },
+        { name:'Sunset Dinner Cruise',           desc:'Enjoy a scenic boat dinner as the sun dips below the horizon.' },
+    ],
+    'Relaxation & Beach': [
+        { name:'Sunrise Beach Walk',             desc:'Stroll the shoreline as golden light reflects off calm waves.' },
+        { name:'Traditional Spa & Massage',      desc:'Unwind with a full-body treatment using local techniques.' },
+        { name:'Beach Hammock & Read',           desc:'Relax in a shaded hammock with ocean breezes and a book.' },
+        { name:'Sunset Boat Cruise',             desc:'Drift along the coast on a leisurely evening sailing trip.' },
+        { name:'Lagoon Snorkelling',             desc:'Float above crystal-clear waters and spot colourful fish.' },
+        { name:'Beachside Yoga Session',         desc:'Start the morning with a calming yoga class on the sand.' },
+        { name:'Island Hopping Day Trip',        desc:'Visit secluded nearby islands with pristine untouched beaches.' },
+        { name:'Tropical Garden Stroll',         desc:'Wander through lush botanical gardens full of exotic flora.' },
+        { name:'Poolside Relaxation & Cocktails',desc:'Spend a lazy afternoon lounging with refreshing local drinks.' },
+        { name:'Beachfront Seafood Dinner',      desc:'Dine at a candlelit table right on the sandy shore.' },
+        { name:'Stand-Up Paddleboarding',        desc:'Glide across calm morning waters on a paddleboard.' },
+        { name:'Coastal Cliff Walk',             desc:'Follow a scenic path along dramatic sea cliffs and coves.' },
+        { name:'Mangrove Kayak Tour',            desc:'Paddle quietly through serene mangrove channels and wildlife.' },
+        { name:'Stargazing on the Beach',        desc:'Lie back on warm sand and admire a brilliantly clear night sky.' },
+        { name:'Sunset Cocktail Hour',           desc:'Sip tropical drinks while watching the horizon turn golden.' },
+    ],
+    'Shopping & City Life': [
+        { name:'Designer District Stroll',       desc:'Browse upscale boutiques and flagship stores in the fashion hub.' },
+        { name:'Artisan Craft Market',           desc:'Pick up unique handmade souvenirs direct from local makers.' },
+        { name:'Modern Shopping Mall Visit',     desc:'Explore multiple floors of local and international brands.' },
+        { name:'Antique & Vintage Bazaar',       desc:'Hunt for rare treasures and collectables in eclectic stalls.' },
+        { name:'City Skyline Observation Deck',  desc:'Take in sweeping city views from a towering vantage point.' },
+        { name:'Trendy Cafe District Hop',       desc:'Discover instagrammable cafes and specialty coffee in hip laneways.' },
+        { name:'Street Art & Graffiti Walk',     desc:'Follow a self-guided route through colourful urban murals.' },
+        { name:'Local Supermarket Exploration',  desc:'Browse unique local products, snacks and household items.' },
+        { name:'Rooftop Bar Sundowner',          desc:'Sip cocktails with a stunning cityscape as the backdrop.' },
+        { name:'Night Market Shopping',          desc:'Browse hundreds of stalls for clothes, food and accessories.' },
+        { name:'Electronics & Gadget Quarter',   desc:'Explore multi-storey tech markets packed with gadgets and gear.' },
+        { name:'Fragrance & Perfume Shop',       desc:'Discover unique local scents and custom blended perfumes.' },
+        { name:'Flower & Spice Souk',            desc:'Wander aromatic stalls overflowing with blooms and spices.' },
+        { name:'Bookshop & Stationery Quarter',  desc:'Browse independent bookshops and beautiful stationery stores.' },
+        { name:'Live Music & Bar Crawl',         desc:'Hop between lively venues showcasing local bands and DJs.' },
+    ],
+    'Family Friendly': [
+        { name:'Interactive Science Museum',     desc:'Hands-on exhibits that make learning fun for all ages.' },
+        { name:'Zoo or Wildlife Park',           desc:'See exotic animals up close in a well-maintained setting.' },
+        { name:'Amusement or Theme Park',        desc:'Enjoy thrilling rides and entertainment for the whole family.' },
+        { name:'Beach & Sandcastle Morning',     desc:'Build sandcastles, splash in safe shallow waters and explore.' },
+        { name:'Local Children Festival',        desc:'Join cultural performances and activities designed for kids.' },
+        { name:'Boat Ride or Harbour Cruise',    desc:'Enjoy a gentle scenic cruise pointing out local landmarks.' },
+        { name:'Cooking Class for Kids',         desc:'Families learn to make a simple traditional dish together.' },
+        { name:'Nature Trail & Picnic',          desc:'Walk an easy forest trail then enjoy a picnic by a stream.' },
+        { name:'Puppet Theatre or Show',         desc:'Watch a colourful traditional puppet performance with the kids.' },
+        { name:'Cycling Family Tour',            desc:'Pedal together on a gentle guided route through the city.' },
+        { name:'Aquarium or Marine Centre',      desc:'Discover sea creatures and marine ecosystems up close.' },
+        { name:'Ice Cream & Sweet Shop Trail',   desc:'Explore local sweet shops sampling unique regional flavours.' },
+        { name:'Mini Train or Tram Ride',        desc:'Sightsee the city on a charming vintage tram or mini train.' },
+        { name:'Treasure Hunt City Walk',        desc:'Follow a fun family quiz trail discovering city landmarks.' },
+        { name:'Sunset Dinner & Local Show',     desc:'Enjoy a family dinner paired with folk music or dancing.' },
+    ]
+};
+
+const DAY_TITLES = {
+    'Cultural & History':   ['Ancient Echoes','Living Heritage','Stories in Stone','Kingdom & Culture','Sacred Grounds','The Old Quarter','Timeless Traditions','Monuments & Memory'],
+    'Adventure & Nature':   ['Into the Wild','Peaks & Rivers','Jungle Depths','The Great Outdoors','Untamed Horizons','Wild at Heart','Nature\'s Playground','Summit & Stream'],
+    'Food & Cuisine':       ['A Feast of Flavours','Market to Table','Street Food Safari','The Spice Route','Taste of the Land','Culinary Discovery','Farm & Fork','Sip & Savour'],
+    'Relaxation & Beach':   ['Sun, Sea & Serenity','Island Bliss','Coastal Dreams','Barefoot Luxury','Waves & Wandering','The Slow Day','Golden Shores','Still Waters'],
+    'Shopping & City Life': ['The Urban Pulse','City Lights','Style & Street','Markets & Skylines','The Fashion Mile','Neon & Night','Downtown Discovery','Block by Block'],
+    'Family Friendly':      ['Family Adventure Day','Fun for Everyone','Little Explorers','Kids Kingdom','Play & Discover','Big Day Out','Wonder & Wander','All Together Now']
+};
+
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function generateItinerary() {
+    const output = document.getElementById('itinerary-output');
+    output.innerHTML = `<div class="ai-loading"><i class="ri-loader-4-line"></i><p>Building your ${selectedDays}-day <strong>${selectedAim}</strong> schedule…</p></div>`;
+
+    setTimeout(() => {
+        const pool   = shuffle(ACTIVITY_POOLS[selectedAim] || ACTIVITY_POOLS['Cultural & History']);
+        const titles = shuffle(DAY_TITLES[selectedAim] || DAY_TITLES['Cultural & History']);
+        const itinerary = [];
+        for (let d = 0; d < selectedDays; d++) {
+            const slots = [];
+            for (let s = 0; s < 5; s++) slots.push(pool[(d * 5 + s) % pool.length]);
+            itinerary.push({ day: d + 1, title: titles[d % titles.length], slots });
+        }
+        renderSchedule(itinerary);
+    }, 500);
+}
+
+function renderSchedule(itinerary) {
+    const output = document.getElementById('itinerary-output');
+
+    const tabsHtml = itinerary.map((day, i) =>
+        `<button class="day-tab${i===0?' active':''}" onclick="switchDay(${i})">Day ${day.day}</button>`
+    ).join('');
+
+    const daysHtml = itinerary.map((day, i) => `
+        <div class="day-schedule${i===0?' active':''}" id="day-sched-${i}">
+            <div class="day-header">
+                <div class="day-num">${day.day}</div>
+                <div class="day-info">
+                    <span class="day-label">Day ${day.day} of ${itinerary.length}</span>
+                    <span class="day-title">${day.title}</span>
+                </div>
+            </div>
+            <div class="timeline">
+                ${day.slots.map((slot, j) => `
+                    <div class="slot">
+                        <div class="slot-time">${TIMES[j]}</div>
+                        <div class="slot-dot"></div>
+                        <div class="slot-content">
+                            <div class="slot-title">${slot.name}</div>
+                            <div class="slot-desc">${slot.desc}</div>
+                            <span class="slot-tag">${TAGS[j]}</span>
+                        </div>
+                    </div>`).join('')}
+            </div>
+        </div>`).join('');
+
+    output.innerHTML = `
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem;">
+            <div class="itinerary-title">🗺️ ${itinerary.length}-Day Itinerary — ${currentCountry}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+            <div class="itinerary-aim-badge"><i class="${aimIcons[selectedAim]||'ri-route-line'}"></i> ${selectedAim}</div>
+            <button onclick="generateItinerary()" style="margin-left:auto;padding:3px 10px;font-size:0.72rem;font-weight:700;border:1px solid #dee2e6;border-radius:20px;background:white;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;"><i class="ri-refresh-line"></i> Regenerate</button>
+        </div>
+        <div class="day-tab-row">${tabsHtml}</div>
+        <div class="schedule">${daysHtml}</div>`;
+}
+
+function switchDay(i) {
+    document.querySelectorAll('.day-tab').forEach((t,j) => t.classList.toggle('active', j===i));
+    document.querySelectorAll('.day-schedule').forEach((d,j) => d.classList.toggle('active', j===i));
+}
+
+document.getElementById('search').addEventListener('input', filter);
+document.getElementById('region-filter').addEventListener('change', filter);
+
+loadCountries();
+</script>
+</body>
+</html>

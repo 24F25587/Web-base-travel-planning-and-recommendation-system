@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel Auth - Welcome Back</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-background-primary: #ffffff;
+      --color-background-secondary: #f8f9fa;
+      --color-background-tertiary: #f1f3f5;
+      --color-border-tertiary: #dee2e6;
+      --color-text-primary: #212529;
+      --color-text-secondary: #495057;
+      --color-text-tertiary: #adb5bd;
+      --border-radius-lg: 12px;
+      --border-radius-md: 8px;
+    }
+    body { background: #f0f2f5; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem 1rem; }
+    .wrap { width: 100%; max-width: 420px; }
+    .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 2.5rem 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .logo { display: flex; align-items: center; gap: 8px; margin-bottom: 1.5rem; }
+    .logo-icon { width: 32px; height: 32px; border-radius: 8px; background: #042C53; display: flex; align-items: center; justify-content: center; }
+    .logo-icon i { color: #fff; font-size: 16px; }
+    .logo-name { font-weight: 500; font-size: 14px; color: var(--color-text-primary); }
+    h1 { font-family: 'DM Serif Display', serif; font-size: 24px; font-weight: 400; color: var(--color-text-primary); margin-bottom: 6px; }
+    .sub { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1.75rem; }
+    .field { margin-bottom: 1.25rem; }
+    label { display: block; font-size: 11px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 5px; letter-spacing: 0.04em; text-transform: uppercase; }
+    
+    /* Input formatting matching custom icons */
+    .input-wrap { position: relative; }
+    .input-wrap i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; color: var(--color-text-tertiary); pointer-events: none; }
+    
+    input { width: 100%; height: 40px; padding: 0 12px 0 38px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: var(--color-background-secondary); color: var(--color-text-primary); font-size: 14px; outline: none; transition: border-color 0.15s; }
+    input:focus { border-color: #185FA5; box-shadow: 0 0 0 3px rgba(24,95,165,0.12); }
+    
+    /* Password layout elements */
+    .eye { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--color-text-tertiary); padding: 0; font-size: 16px; display: flex; align-items: center; }
+    .row { display: flex; align-items: center; justify-content: space-between; margin-top: -0.25rem; margin-bottom: 1.5rem; }
+    .check-label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--color-text-secondary); cursor: pointer; }
+    .check-label input { width: 14px; height: 14px; padding: 0; accent-color: #185FA5; }
+    .forgot { font-size: 13px; color: #185FA5; text-decoration: none; font-weight: 500; }
+    
+    .btn-login { width: 100%; height: 42px; background: #042C53; color: #fff; border: none; border-radius: var(--border-radius-md); font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s, transform 0.1s; margin-bottom: 1.25rem; }
+    .btn-login:hover { background: #0C447C; }
+    .btn-login:active { transform: scale(0.98); }
+    .btn-login.loading { opacity: 0.7; pointer-events: none; }
+    
+    .signup-link { text-align: center; font-size: 13px; color: var(--color-text-secondary); }
+    .signup-link a { color: #185FA5; text-decoration: none; font-weight: 500; }
+    .msg { font-size: 13px; text-align: center; padding: 8px 12px; border-radius: var(--border-radius-md); margin-bottom: 1.25rem; display: none; }
+    .msg.error { background: #f8d7da; color: #721c24; display: block; }
+    .msg.success { background: #d4edda; color: #155724; display: block; }
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="logo">
+      <div class="logo-icon"><i class="ti ti-shield-lock"></i></div>
+      <span class="logo-name">Travel planning and recommendation system</span>
+    </div>
+    <h1>Welcome back</h1>
+    <p class="sub">Sign in to your account to continue</p>
+
+    <div class="msg" id="msg"></div>
+
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="field">
+        <label for="email">Email address</label>
+        <div class="input-wrap">
+          <i class="ti ti-mail"></i>
+          <input type="email" id="email" placeholder="you@example.com" autocomplete="email" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="input-wrap">
+          <i class="ti ti-lock"></i>
+          <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
+          <button type="button" class="eye" id="eye-btn" aria-label="Show password">
+            <i class="ti ti-eye" id="eye-icon"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="row">
+        <label class="check-label">
+          <input type="checkbox" id="remember"> Remember me
+        </label>
+        <a href="#" class="forgot">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="btn-login" id="login-btn">
+        <i class="ti ti-login"></i>
+        Sign in
+      </button>
+    </form>
+
+    <p class="signup-link">Don't have an account? <a href="register.html">Create one</a></p>
+  </div>
+</div>
+
+<script>
+// Toggle Password Visibility Component
+document.getElementById('eye-btn').addEventListener('click', function(e) {
+  e.preventDefault();
+  const pw = document.getElementById('password');
+  const icon = document.getElementById('eye-icon');
+  if (pw.type === 'password') {
+    pw.type = 'text';
+    icon.className = 'ti ti-eye-off';
+    this.setAttribute('aria-label', 'Hide password');
+  } else {
+    pw.type = 'password';
+    icon.className = 'ti ti-eye';
+    this.setAttribute('aria-label', 'Show password');
+  }
+});
+
+function showMsg(text, type) {
+  const m = document.getElementById('msg');
+  m.textContent = text;
+  m.className = 'msg ' + type;
+}
+
+// Processing the network auth pipeline request
+async function handleLogin(event) {
+  event.preventDefault();
+
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const btn = document.getElementById('login-btn');
+
+  btn.classList.add('loading');
+  btn.innerHTML = '<i class="ti ti-loader" style="animation:spin 1s linear infinite"></i> Signing in…';
+
+  try {
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: password })
+    });
+
+    const result = await response.json();
+
+   if (response.ok && result.success) {
+      showMsg(result.message, 'success');
+      
+      // Redirect to the homepage after a short delay (so they can see the success message)
+      setTimeout(() => {
+          window.location.href = 'homepage.html';
+      }, 1000); // 1000 milliseconds = 1 second delay
+      
+    } else {
+      showMsg(result.message || 'Invalid email or password.', 'error');
+    }
+  } catch (error) {
+    showMsg('Could not connect to authentication server.', 'error');
+  } finally {
+    btn.classList.remove('loading');
+    btn.innerHTML = '<i class="ti ti-login"></i> Sign in';
+  }
+}
+</script>
+<style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+</body>
+</html>
